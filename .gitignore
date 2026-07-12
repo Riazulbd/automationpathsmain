@@ -10,5 +10,6 @@ npm-debug.log*
 .env
 server/data/*.db
 server/data/*.db-*
+server/data/uploads/
 uploads/blog/*
 !uploads/blog/.gitkeep

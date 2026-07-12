@@ -265,6 +265,7 @@ export default function App() {
         { label: "Process", href: "/#process" },
         { label: "Results", href: "/#results" },
         { label: "FAQ", href: "/#faq" },
+        { label: "Funnel Quiz", href: "/funnel-quiz" },
       ];
 
   const clay = (extra = "") =>
@@ -432,6 +433,10 @@ export default function App() {
             See Results
           </a>
         </div>
+
+        <a href="/funnel-quiz" style={{ display: "inline-flex", alignItems: "center", gap: 8, marginTop: isMobile ? 14 : 20, padding: isMobile ? "8px 16px" : "9px 20px", background: theme.chipBg, color: theme.chipC, borderRadius: 999, fontWeight: 700, fontSize: isMobile ? "0.8rem" : "0.88rem", textDecoration: "none", position: "relative", zIndex: 2, animation: "heroFadeUp 0.72s ease-out 0.5s both" }}>
+          <span aria-hidden="true">🩺</span> Take the free Funnel Health Quiz — 6 min -&gt;
+        </a>
 
         <div className="hero-scroll" style={{ width: "100%", maxWidth: 1140, marginTop: isMobile ? 14 : 34, display: isMobile ? "flex" : "grid", gridTemplateColumns: isMobile ? undefined : "repeat(3, minmax(0, 1fr))", gap: isMobile ? 10 : 14, position: "relative", zIndex: 2, overflowX: isMobile ? "auto" : "visible", paddingBottom: isMobile ? 4 : 0, scrollSnapType: isMobile ? "x mandatory" : "none", animation: "heroFadeUp 0.76s ease-out 0.56s both" }}>
           {heroPrinciples.map((item, index) => (

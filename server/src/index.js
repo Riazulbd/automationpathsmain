@@ -20,6 +20,7 @@ import {
 import { initDatabase } from "./db/database.js";
 import { runMigrations } from "./db/migrations.js";
 import authRoutes from "./routes/auth.js";
+import quizRoutes from "./routes/quiz.js";
 import { getJwtSecret } from "./utils/auth.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -67,6 +68,7 @@ app.use(morgan("dev"));
 app.use("/uploads", express.static(getUploadsRoot()));
 
 app.use("/api/auth", authRoutes);
+app.use("/api/quiz", quizRoutes);
 
 if (frontendDistPath) {
   app.use(

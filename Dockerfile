@@ -1,5 +1,11 @@
 FROM node:24-alpine AS frontend-build
 WORKDIR /app
+# Public Supabase config is inlined at build time (VITE_ vars). These are safe to
+# expose (protected by RLS). Pass with: --build-arg VITE_SUPABASE_URL=... etc.
+ARG VITE_SUPABASE_URL=""
+ARG VITE_SUPABASE_ANON_KEY=""
+ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
+ENV VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
