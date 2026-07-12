@@ -1,9 +1,10 @@
-import React, { Suspense, lazy } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import React, { Suspense, lazy, useEffect, useRef } from "react";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import AutomationPathsSite from "../automation-paths-final.jsx";
+import { trackPageview, initClickTracking } from "./analytics.js";
 
 const FunnelQuiz = lazy(() => import("./quiz/FunnelQuiz.jsx"));
-const QuizDashboard = lazy(() => import("./quiz/QuizDashboard.jsx"));
+const Dashboard = lazy(() => import("./quiz/Dashboard.jsx"));
 
 function LoadingFallback() {
   return (
@@ -22,15 +23,39 @@ function LoadingFallback() {
   );
 }
 
+// Fires a pageview on first load and on every client-side route change, and
+// installs the global click listener once. Renders nothing.
+function AnalyticsTracker() {
+  const location = useLocation();
+  const lastPath = useRef(null);
+
+  useEffect(() => {
+    initClickTracking();
+  }, []);
+
+  useEffect(() => {
+    if (lastPath.current === location.pathname) return;
+    lastPath.current = location.pathname;
+    trackPageview(location.pathname);
+  }, [location.pathname]);
+
+  return null;
+}
+
 export default function App() {
   return (
-    <Suspense fallback={<LoadingFallback />}>
-      <Routes>
-        <Route path="/" element={<AutomationPathsSite />} />
-        <Route path="/funnel-quiz" element={<FunnelQuiz />} />
-        <Route path="/funnel-quiz/admin" element={<QuizDashboard />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Suspense>
+    <>
+      <AnalyticsTracker />
+      <Suspense fallback={<LoadingFallback />}>
+        <Routes>
+          <Route path="/" element={<AutomationPathsSite />} />
+          <Route path="/funnel-quiz" element={<FunnelQuiz />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          {/* Legacy path → new location */}
+          <Route path="/funnel-quiz/admin" element={<Navigate to="/dashboard" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
+    </>
   );
 }

@@ -46,28 +46,45 @@ back (insert-only policy).
 > ⚠️ **Never** put the Supabase `service_role` key in this frontend or in `.env`
 > (any `VITE_`-prefixed value is shipped to the browser). It bypasses RLS.
 
-## Submissions dashboard
+## Dashboard
 
-A private, password-gated dashboard lives at **`/funnel-quiz/admin`**. It lists every
-submission and, per person, shows their score, top leaks, critical warnings, and **all 33
-selections** (6 profile + 27 diagnostic, as the actual option text they chose). It also
-exports everything to CSV.
+A private, password-gated dashboard lives at **`/dashboard`** (the old
+`/funnel-quiz/admin` redirects here). Two tabs:
+
+- **Overview** — website analytics: page views, unique visitors, and clicks over the last
+  30 days, a daily traffic chart, top pages, and top-clicked elements. Plus quiz-submission
+  totals.
+- **Submissions** — every quiz response; click a row for the full per-person breakdown
+  (score, top leaks, critical warnings, and **all 33 selections** as the actual option text
+  chosen). Exports to CSV.
+
+**Website analytics** are first-party: [`../analytics.js`](../analytics.js) inserts
+`pageview`/`click` events into the `site_events` table with the anon key (insert-only RLS),
+fired from `AnalyticsTracker` in [`../App.jsx`](../App.jsx). The `/dashboard` route itself is
+never tracked.
 
 **How it's secured (no password = no data):**
 
-- The public quiz writes with the **anon** key, which is **insert-only** under RLS — it
-  cannot read submissions back.
-- Reading requires the **service_role** key, which lives **only on the Express server**
-  (never shipped to the browser).
-- The dashboard API (`/api/quiz/dashboard/*`) checks `QUIZ_DASHBOARD_PASSWORD`
+- The browser writes (submissions + events) with the **anon** key, which is **insert-only**
+  under RLS — it cannot read anything back.
+- Reading/aggregating requires the **service_role** key, which lives **only on the Express
+  server** (never shipped to the browser).
+- The dashboard API (`/api/dashboard/*`) checks `QUIZ_DASHBOARD_PASSWORD`
   (constant-time compare) and issues a 12h JWT. Every read requires that token.
 
 So there is no client path to the data without the password.
 
-Dashboard files: [`QuizDashboard.jsx`](./QuizDashboard.jsx) (frontend) and
-[`../../server/src/routes/quiz.js`](../../server/src/routes/quiz.js) (API). The API server
-must be running for the dashboard to work (`npm run server:dev` in dev; the container runs
-it automatically).
+Dashboard files: [`Dashboard.jsx`](./Dashboard.jsx) (frontend) and
+[`../../server/src/routes/dashboard.js`](../../server/src/routes/dashboard.js) (API). The API
+server must be running for the dashboard to work (`npm run server:dev` in dev; the container
+runs it automatically).
+
+### Supabase tables
+
+Run **both** files in the Supabase SQL editor (once each):
+
+1. [`../../supabase/schema.sql`](../../supabase/schema.sql) — `funnel_quiz_submissions`
+2. [`../../supabase/analytics.sql`](../../supabase/analytics.sql) — `site_events`
 
 ## Environment variables
 
@@ -77,7 +94,7 @@ it automatically).
 | `VITE_SUPABASE_ANON_KEY` | frontend | **build** time | Public (RLS-protected). |
 | `SUPABASE_URL` | server | runtime | Falls back to `VITE_SUPABASE_URL`. |
 | `SUPABASE_SERVICE_ROLE_KEY` | server | runtime | **Secret.** Never expose to the browser. |
-| `QUIZ_DASHBOARD_PASSWORD` | server | runtime | Password for `/funnel-quiz/admin`. |
+| `QUIZ_DASHBOARD_PASSWORD` | server | runtime | Password for `/dashboard`. |
 
 Locally, all of these live in the gitignored root `.env` (Vite and the server both read it).
 `.env` is excluded from the Docker build context (`.dockerignore`), so in production:
