@@ -21,6 +21,10 @@ import { initDatabase } from "./db/database.js";
 import { runMigrations } from "./db/migrations.js";
 import authRoutes from "./routes/auth.js";
 import dashboardRoutes from "./routes/dashboard.js";
+import blogRoutes from "./routes/blog.js";
+import adminBlogRoutes from "./routes/adminBlog.js";
+import seoRoutes from "./routes/seo.js";
+import { renderBlogHtml } from "./services/ssr.js";
 import { getJwtSecret } from "./utils/auth.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -68,7 +72,10 @@ app.use(morgan("dev"));
 app.use("/uploads", express.static(getUploadsRoot()));
 
 app.use("/api/auth", authRoutes);
+app.use("/api/dashboard/blog", adminBlogRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/blog", blogRoutes);
+app.use("/", seoRoutes);
 
 if (frontendDistPath) {
   app.use(
@@ -77,16 +84,24 @@ if (frontendDistPath) {
     })
   );
 
-  app.get("*", (req, res, next) => {
-    if (
-      req.path.startsWith("/api/") ||
-      req.path.startsWith("/uploads/") ||
-      req.path === "/sitemap.xml" ||
-      req.path === "/feed.xml" ||
-      req.path === "/feed/atom.xml"
-    ) {
+  app.get("*", async (req, res, next) => {
+    if (req.path.startsWith("/api/") || req.path.startsWith("/uploads/")) {
       next();
       return;
+    }
+
+    // Blog pages get server-side SEO injection (title/meta/OG/JSON-LD + article
+    // text) so they index and share correctly. Everything else gets the SPA shell.
+    if (req.path.startsWith("/blog")) {
+      try {
+        const rendered = await renderBlogHtml(cachedFrontendIndexHtml, req.path);
+        if (rendered) {
+          res.type("html").send(rendered);
+          return;
+        }
+      } catch (error) {
+        console.error("[ssr] blog render failed:", error.message);
+      }
     }
 
     res.type("html").send(cachedFrontendIndexHtml);

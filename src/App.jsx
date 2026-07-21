@@ -5,6 +5,8 @@ import { trackPageview, initClickTracking } from "./analytics.js";
 
 const FunnelQuiz = lazy(() => import("./quiz/FunnelQuiz.jsx"));
 const Dashboard = lazy(() => import("./quiz/Dashboard.jsx"));
+const BlogIndex = lazy(() => import("./blog/BlogIndex.jsx"));
+const BlogPost = lazy(() => import("./blog/BlogPost.jsx"));
 
 function LoadingFallback() {
   return (
@@ -51,6 +53,10 @@ export default function App() {
           <Route path="/" element={<AutomationPathsSite />} />
           <Route path="/funnel-quiz" element={<FunnelQuiz />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/blog" element={<BlogIndex />} />
+          <Route path="/blog/category/:slug" element={<BlogIndex taxonomy="category" />} />
+          <Route path="/blog/tag/:slug" element={<BlogIndex taxonomy="tag" />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
           {/* Legacy path → new location */}
           <Route path="/funnel-quiz/admin" element={<Navigate to="/dashboard" replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />

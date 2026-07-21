@@ -1,8 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { Suspense, lazy, useCallback, useEffect, useMemo, useState } from "react";
 import SEOHead from "../SEOHead.jsx";
 import automationPathsBrandLogo from "../../Automation Paths Logo (3).png";
 import { TYPOGRAPHY, useSessionTheme, makeClay } from "./theme.js";
 import { PROFILE_QUESTIONS, DIAGNOSTIC_QUESTIONS, CATEGORIES } from "./quizData.js";
+
+const BlogAdmin = lazy(() => import("../blog/admin/BlogAdmin.jsx"));
 
 const TOKEN_KEY = "quiz_dash_token";
 const API = "/api/dashboard";
@@ -142,6 +144,12 @@ export default function Dashboard() {
     setAnalytics(null);
   }, []);
 
+  const onExpired = useCallback(() => {
+    sessionStorage.removeItem(TOKEN_KEY);
+    setToken(null);
+    setError("Session expired — please sign in again.");
+  }, []);
+
   const shell = { background: theme.bg, color: theme.text, fontFamily: TYPOGRAPHY.body, minHeight: "100vh", position: "relative" };
 
   return (
@@ -178,10 +186,16 @@ export default function Dashboard() {
             </div>
           )}
 
-          {tab === "overview" ? (
+          {tab === "overview" && (
             <Overview theme={theme} clay={clay} isMobile={isMobile} analytics={analytics} submissions={submissions} loading={loading} />
-          ) : (
+          )}
+          {tab === "submissions" && (
             <Submissions theme={theme} clay={clay} isMobile={isMobile} submissions={submissions} loading={loading} onOpen={setDetail} />
+          )}
+          {tab === "blog" && (
+            <Suspense fallback={<div style={{ padding: 40, textAlign: "center", color: theme.text3 }}>Loading editor…</div>}>
+              <BlogAdmin token={token} theme={theme} isMobile={isMobile} onExpired={onExpired} />
+            </Suspense>
           )}
         </div>
       )}
@@ -215,6 +229,7 @@ function Tabs({ theme, tab, setTab, isMobile }) {
   const items = [
     { id: "overview", label: "Overview" },
     { id: "submissions", label: "Submissions" },
+    { id: "blog", label: "Blog" },
   ];
   return (
     <div style={{ display: "inline-flex", gap: 4, padding: 4, background: theme.chipBg, borderRadius: 999, marginBottom: 20 }}>

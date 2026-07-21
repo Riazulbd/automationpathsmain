@@ -1,0 +1,68 @@
+/* Admin block editor chrome */
+.ap-editor-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  padding: 8px;
+  border-bottom: 1px solid var(--ed-border, #e5e7eb);
+  position: sticky;
+  top: 0;
+  background: var(--ed-bar, #fff);
+  z-index: 5;
+  border-radius: 12px 12px 0 0;
+}
+.ap-editor-toolbar button {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ed-text, #374151);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Manrope", sans-serif;
+}
+.ap-editor-toolbar button:hover { background: var(--ed-hover, rgba(0, 0, 0, 0.05)); }
+.ap-editor-toolbar button.is-active {
+  background: var(--ed-active, rgba(99, 102, 241, 0.14));
+  color: var(--ed-active-text, #4338ca);
+}
+.ap-editor-toolbar .sep {
+  width: 1px;
+  align-self: stretch;
+  margin: 4px 4px;
+  background: var(--ed-border, #e5e7eb);
+}
+.ap-editor-surface {
+  padding: 22px 24px;
+  min-height: 380px;
+  max-height: 62vh;
+  overflow-y: auto;
+}
+.ap-editor-surface .ProseMirror {
+  outline: none;
+  min-height: 340px;
+}
+.ap-editor-surface .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--ed-placeholder, #9ca3af);
+  pointer-events: none;
+  height: 0;
+}
+.ap-editor-surface .ProseMirror img.ProseMirror-selectednode {
+  outline: 3px solid var(--ed-active-text, #4338ca);
+}
+.ap-editor-count {
+  padding: 8px 16px;
+  font-size: 0.76rem;
+  color: var(--ed-muted, #6b7280);
+  border-top: 1px solid var(--ed-border, #e5e7eb);
+  display: flex;
+  justify-content: space-between;
+}

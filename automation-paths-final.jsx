@@ -265,6 +265,7 @@ export default function App() {
         { label: "Process", href: "/#process" },
         { label: "Results", href: "/#results" },
         { label: "FAQ", href: "/#faq" },
+        { label: "Blog", href: "/blog" },
         { label: "Funnel Quiz", href: "/funnel-quiz" },
       ];
 

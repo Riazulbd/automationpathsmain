@@ -1,7 +1,7 @@
 import express from "express";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
-import { getJwtSecret } from "../utils/auth.js";
+import { DASH_SCOPE as SCOPE, dashSecret, requireDashAuth } from "../middleware/dashAuth.js";
 
 // Private dashboard API (submissions + website analytics).
 //
@@ -12,7 +12,6 @@ import { getJwtSecret } from "../utils/auth.js";
 const router = express.Router();
 const SUBMISSIONS = "funnel_quiz_submissions";
 const EVENTS = "site_events";
-const SCOPE = "quiz-dashboard";
 const MAX_EVENTS = 20000; // cap for detailed aggregation
 
 function supabaseConfig() {
@@ -34,26 +33,6 @@ function timingSafeEqual(a, b) {
     return false;
   }
   return crypto.timingSafeEqual(ab, bb);
-}
-
-function dashSecret(req) {
-  return req.app.locals.jwtSecret || getJwtSecret(req.app.locals.db);
-}
-
-function requireDashAuth(req, res, next) {
-  const authHeader = req.headers.authorization || "";
-  const token =
-    req.cookies?.quiz_dash_token ||
-    (authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null);
-
-  if (!token) return res.status(401).json({ error: "Authentication required" });
-  try {
-    const payload = jwt.verify(token, dashSecret(req));
-    if (payload.scope !== SCOPE) throw new Error("Wrong token scope");
-    return next();
-  } catch {
-    return res.status(401).json({ error: "Invalid or expired session" });
-  }
 }
 
 // POST /api/dashboard/login  { password } -> { token }
