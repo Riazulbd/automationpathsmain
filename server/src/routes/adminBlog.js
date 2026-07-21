@@ -126,7 +126,13 @@ function buildPayload(body) {
   set("featured_image_alt", body.featured_image_alt ?? undefined);
   set("category_id", body.category_id || null);
   set("author_name", body.author_name ?? undefined);
+  set("author_title", body.author_title ?? undefined);
+  set("author_bio", body.author_bio ?? undefined);
+  set("author_credentials", body.author_credentials ?? undefined);
   set("author_avatar", body.author_avatar ?? undefined);
+  set("author_url", body.author_url ?? undefined);
+  set("author_linkedin", body.author_linkedin ?? undefined);
+  set("author_twitter", body.author_twitter ?? undefined);
 
   // SEO
   set("meta_title", body.meta_title ?? undefined);

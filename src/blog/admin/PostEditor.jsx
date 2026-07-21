@@ -1,14 +1,46 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Sparkles, Upload, ExternalLink, Trash2, ArrowLeft, Loader2, ChevronDown } from "lucide-react";
+import { Sparkles, Upload, ExternalLink, Trash2, ArrowLeft, Loader2, ChevronDown, Check, AlertCircle } from "lucide-react";
 import { TYPOGRAPHY } from "../../quiz/theme.js";
 import TiptapEditor from "./TiptapEditor.jsx";
+import SeoAnalysis from "./SeoAnalysis.jsx";
 import { apiGet, apiPost, apiPatch, apiDelete, apiUpload } from "./adminApi.js";
+
+const AUTHOR_FIELDS = [
+  "author_name", "author_title", "author_bio", "author_credentials",
+  "author_avatar", "author_url", "author_linkedin", "author_twitter",
+];
+
+// Sensible defaults so a new post starts with a strong E-E-A-T baseline.
+const DEFAULT_AUTHOR = {
+  author_name: "Riazul Islam",
+  author_title: "Revenue Systems Architect & Fractional CTO",
+  author_bio:
+    "Riazul Islam is a Revenue Systems Architect and Fractional CTO who designs CRM architecture, Voice AI, and automation systems that compound revenue for agencies, coaches, and consultants.",
+  author_credentials: "Top Rated on Upwork · 5,000+ hours · $59.76M attributed client revenue · 7+ years",
+  author_avatar: "",
+  author_url: "https://automationpaths.com",
+  author_linkedin: "",
+  author_twitter: "",
+};
+
+const AUTHOR_STORAGE_KEY = "ap_blog_author";
+
+// Reuse the last-saved author profile so it only has to be filled in once.
+function loadStoredAuthor() {
+  try {
+    const raw = window.localStorage.getItem(AUTHOR_STORAGE_KEY);
+    if (raw) return { ...DEFAULT_AUTHOR, ...JSON.parse(raw) };
+  } catch {
+    /* ignore */
+  }
+  return { ...DEFAULT_AUTHOR };
+}
 
 const EMPTY = {
   title: "", slug: "", excerpt: "", content: "",
   featured_image: "", featured_image_alt: "",
   category_id: "", tags: [], status: "draft", scheduled_at: "",
-  author_name: "Riazul Islam",
+  ...DEFAULT_AUTHOR,
   meta_title: "", meta_description: "", focus_keyword: "", keywords: "",
   canonical_url: "", og_title: "", og_description: "", og_image: "",
   schema_type: "BlogPosting", noindex: false,
@@ -24,19 +56,38 @@ function slugifyClient(text) {
 }
 
 export default function PostEditor({ token, theme, isMobile, postId, categories, onBack, onSaved, onExpired, onCategoriesChanged }) {
-  const [form, setForm] = useState(EMPTY);
+  // New posts start from the reusable author profile; existing posts load their own.
+  const [form, setForm] = useState(() => (postId ? EMPTY : { ...EMPTY, ...loadStoredAuthor() }));
   const [loading, setLoading] = useState(Boolean(postId));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [seoOpen, setSeoOpen] = useState(false);
+  const [authorOpen, setAuthorOpen] = useState(false);
   const [aiBusy, setAiBusy] = useState("");
+  const [aiToast, setAiToast] = useState(null); // { status: 'loading'|'done'|'error', text }
   const [slugTouched, setSlugTouched] = useState(Boolean(postId));
   const [tagInput, setTagInput] = useState("");
   const featuredInputRef = useRef(null);
   const [uploadingFeatured, setUploadingFeatured] = useState(false);
+  const avatarInputRef = useRef(null);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const aiToastTimer = useRef(null);
 
   const set = useCallback((patch) => setForm((f) => ({ ...f, ...patch })), []);
+
+  // Always-visible AI status toast (survives scrolling to the SEO panel).
+  const showAiToast = useCallback((status, text) => {
+    setAiToast({ status, text });
+    if (aiToastTimer.current) clearTimeout(aiToastTimer.current);
+    if (status !== "loading") aiToastTimer.current = setTimeout(() => setAiToast(null), 4500);
+  }, []);
+  useEffect(() => () => aiToastTimer.current && clearTimeout(aiToastTimer.current), []);
+
+  const aiErrorText = (e) =>
+    /api key/i.test(e?.message || "")
+      ? "AI isn’t set up yet — add OPENROUTER_API_KEY to your .env to enable AI writing."
+      : e?.message || "AI request failed";
 
   const handleErr = useCallback(
     (e) => {
@@ -84,6 +135,13 @@ export default function PostEditor({ token, theme, isMobile, postId, categories,
     category_id: form.category_id || null,
     tags: form.tags,
     author_name: form.author_name,
+    author_title: form.author_title || null,
+    author_bio: form.author_bio || null,
+    author_credentials: form.author_credentials || null,
+    author_avatar: form.author_avatar || null,
+    author_url: form.author_url || null,
+    author_linkedin: form.author_linkedin || null,
+    author_twitter: form.author_twitter || null,
     meta_title: form.meta_title || null,
     meta_description: form.meta_description || null,
     focus_keyword: form.focus_keyword || null,
@@ -118,6 +176,12 @@ export default function PostEditor({ token, theme, isMobile, postId, categories,
       const res = postId
         ? await apiPatch(token, `/posts/${postId}`, payload)
         : await apiPost(token, `/posts`, payload);
+      // Remember the author profile so new posts pre-fill it.
+      try {
+        const profile = {};
+        AUTHOR_FIELDS.forEach((k) => { profile[k] = form[k] || ""; });
+        window.localStorage.setItem(AUTHOR_STORAGE_KEY, JSON.stringify(profile));
+      } catch { /* ignore */ }
       setForm((f) => ({ ...f, status, slug: res.post.slug }));
       setNotice(
         status === "published" ? "Published ✓" : status === "scheduled" ? "Scheduled ✓" : "Saved ✓"
@@ -158,13 +222,31 @@ export default function PostEditor({ token, theme, isMobile, postId, categories,
     }
   };
 
+  const onPickAvatar = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setUploadingAvatar(true);
+    setError("");
+    try {
+      const { url } = await apiUpload(token, file);
+      set({ author_avatar: url });
+    } catch (err) {
+      handleErr(err);
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
+
   // --- AI actions ---
   const aiDraft = async () => {
+    if (aiBusy) return; // guard against duplicate requests
     const topic = window.prompt("What should this post be about? (topic or working title)", form.title);
     if (!topic) return;
     const keywords = window.prompt("Target keywords (optional, comma separated)", form.keywords) || "";
     setAiBusy("draft");
     setError("");
+    showAiToast("loading", "Writing your draft… this can take up to a minute.");
     try {
       const { result } = await apiPost(token, "/ai", { action: "draft", topic, keywords });
       set({
@@ -175,14 +257,18 @@ export default function PostEditor({ token, theme, isMobile, postId, categories,
         keywords: result.keywords || form.keywords,
       });
       setNotice("AI draft inserted — review and edit before publishing.");
+      showAiToast("done", "Draft inserted ✓");
     } catch (e) {
-      handleErr(e);
+      if (e?.expired) onExpired?.();
+      else setError(aiErrorText(e));
+      showAiToast("error", aiErrorText(e));
     } finally {
       setAiBusy("");
     }
   };
 
   const aiImprove = async () => {
+    if (aiBusy) return;
     if (!form.content) {
       setError("Write or generate some content first.");
       return;
@@ -194,20 +280,26 @@ export default function PostEditor({ token, theme, isMobile, postId, categories,
     if (instruction === null) return;
     setAiBusy("improve");
     setError("");
+    showAiToast("loading", "Improving your content…");
     try {
       const { result } = await apiPost(token, "/ai", { action: "improve", content: form.content, instruction });
       if (result.content) set({ content: result.content });
       setNotice("Content improved by AI.");
+      showAiToast("done", "Content improved ✓");
     } catch (e) {
-      handleErr(e);
+      if (e?.expired) onExpired?.();
+      else setError(aiErrorText(e));
+      showAiToast("error", aiErrorText(e));
     } finally {
       setAiBusy("");
     }
   };
 
   const aiSeo = async () => {
+    if (aiBusy) return;
     setAiBusy("seo");
     setError("");
+    showAiToast("loading", "Generating SEO metadata…");
     try {
       const { result } = await apiPost(token, "/ai", { action: "seo", title: form.title, content: form.content });
       set({
@@ -219,8 +311,11 @@ export default function PostEditor({ token, theme, isMobile, postId, categories,
       });
       setSeoOpen(true);
       setNotice("SEO metadata generated.");
+      showAiToast("done", "SEO metadata generated ✓");
     } catch (e) {
-      handleErr(e);
+      if (e?.expired) onExpired?.();
+      else setError(aiErrorText(e));
+      showAiToast("error", aiErrorText(e));
     } finally {
       setAiBusy("");
     }
@@ -268,8 +363,8 @@ export default function PostEditor({ token, theme, isMobile, postId, categories,
           <ArrowLeft size={16} /> Back to posts
         </button>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <button onClick={aiDraft} disabled={Boolean(aiBusy)} style={sideBtn(theme.chipBg, theme.chipC)}>
-            {aiBusy === "draft" ? <Loader2 size={15} className="ap-spin" /> : <Sparkles size={15} />} Draft with AI
+          <button onClick={aiDraft} disabled={Boolean(aiBusy)} style={sideBtn(theme.chipBg, theme.chipC, { opacity: aiBusy ? 0.55 : 1, cursor: aiBusy ? "not-allowed" : "pointer" })}>
+            {aiBusy === "draft" ? <><Loader2 size={15} className="ap-spin" /> Drafting…</> : <><Sparkles size={15} /> Draft with AI</>}
           </button>
           {postId && (
             <button onClick={remove} style={sideBtn("rgba(239,68,68,0.1)", "#DC2626")}>
@@ -314,8 +409,8 @@ export default function PostEditor({ token, theme, isMobile, postId, categories,
           </div>
 
           <div style={{ display: "flex", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
-            <button onClick={aiImprove} disabled={Boolean(aiBusy)} style={sideBtn(theme.chipBg, theme.chipC, { fontSize: "0.8rem", padding: "8px 12px" })}>
-              {aiBusy === "improve" ? <Loader2 size={14} className="ap-spin" /> : <Sparkles size={14} />} Improve content
+            <button onClick={aiImprove} disabled={Boolean(aiBusy)} style={sideBtn(theme.chipBg, theme.chipC, { fontSize: "0.8rem", padding: "8px 12px", opacity: aiBusy ? 0.55 : 1, cursor: aiBusy ? "not-allowed" : "pointer" })}>
+              {aiBusy === "improve" ? <><Loader2 size={14} className="ap-spin" /> Improving…</> : <><Sparkles size={14} /> Improve content</>}
             </button>
           </div>
 
@@ -426,6 +521,47 @@ export default function PostEditor({ token, theme, isMobile, postId, categories,
             />
           </div>
 
+          {/* Author & E-E-A-T profile */}
+          <div style={card}>
+            <button onClick={() => setAuthorOpen((o) => !o)} style={{ display: "flex", width: "100%", justifyContent: "space-between", alignItems: "center", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+              <span style={{ ...label, marginBottom: 0 }}>Author & E-E-A-T</span>
+              <ChevronDown size={16} color={theme.text3} style={{ transform: authorOpen ? "rotate(180deg)" : "none", transition: "transform 0.2s" }} />
+            </button>
+            {authorOpen && (
+              <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 12 }}>
+                <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                  {form.author_avatar ? (
+                    <img src={form.author_avatar} alt={form.author_name} style={{ width: 52, height: 52, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />
+                  ) : (
+                    <div style={{ width: 52, height: 52, borderRadius: "50%", background: theme.chipBg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: theme.chipC, fontWeight: 800 }}>
+                      {(form.author_name || "?").slice(0, 1)}
+                    </div>
+                  )}
+                  <button onClick={() => avatarInputRef.current?.click()} disabled={uploadingAvatar} style={{ ...sideBtn(theme.chipBg, theme.chipC, { fontSize: "0.8rem", padding: "8px 12px" }) }}>
+                    {uploadingAvatar ? <Loader2 size={14} className="ap-spin" /> : <Upload size={14} />} {form.author_avatar ? "Change photo" : "Author photo"}
+                  </button>
+                  <input ref={avatarInputRef} type="file" accept="image/*" onChange={onPickAvatar} style={{ display: "none" }} />
+                </div>
+                <Field label="Author name" theme={theme} inp={inp} labelStyle={label} value={form.author_name} onChange={(v) => set({ author_name: v })} />
+                <Field label="Job title / role" theme={theme} inp={inp} labelStyle={label} value={form.author_title} onChange={(v) => set({ author_title: v })} placeholder="e.g. Revenue Systems Architect" />
+                <div>
+                  <label style={label}>Bio</label>
+                  <textarea value={form.author_bio || ""} onChange={(e) => set({ author_bio: e.target.value })} rows={3} placeholder="Who wrote this and why they're qualified" style={{ ...inp, resize: "vertical", fontSize: "0.85rem" }} />
+                </div>
+                <Field label="Credentials / expertise" theme={theme} inp={inp} labelStyle={label} value={form.author_credentials} onChange={(v) => set({ author_credentials: v })} placeholder="e.g. Top Rated · 5,000+ hrs · $59M revenue" />
+                <Field label="Website URL" theme={theme} inp={inp} labelStyle={label} value={form.author_url} onChange={(v) => set({ author_url: v })} placeholder="https://…" />
+                <Field label="LinkedIn URL" theme={theme} inp={inp} labelStyle={label} value={form.author_linkedin} onChange={(v) => set({ author_linkedin: v })} placeholder="https://linkedin.com/in/…" />
+                <Field label="X / Twitter URL" theme={theme} inp={inp} labelStyle={label} value={form.author_twitter} onChange={(v) => set({ author_twitter: v })} placeholder="https://x.com/…" />
+                <div style={{ fontSize: "0.74rem", color: theme.text3, lineHeight: 1.4 }}>
+                  Saved for reuse — new posts pre-fill this. These fields also power the article’s author schema (a real Google E-E-A-T signal).
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Content score — EEAT / GEO / SEO gauges */}
+          <SeoAnalysis form={form} theme={theme} onSetKeyword={(v) => set({ focus_keyword: v })} cardStyle={card} labelStyle={label} inpStyle={inp} />
+
           {/* SEO */}
           <div style={card}>
             <button onClick={() => setSeoOpen((o) => !o)} style={{ display: "flex", width: "100%", justifyContent: "space-between", alignItems: "center", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
@@ -434,8 +570,8 @@ export default function PostEditor({ token, theme, isMobile, postId, categories,
             </button>
             {seoOpen && (
               <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 12 }}>
-                <button onClick={aiSeo} disabled={Boolean(aiBusy)} style={{ ...sideBtn(theme.chipBg, theme.chipC, { fontSize: "0.8rem", padding: "8px 12px" }) }}>
-                  {aiBusy === "seo" ? <Loader2 size={14} className="ap-spin" /> : <Sparkles size={14} />} Generate SEO with AI
+                <button onClick={aiSeo} disabled={Boolean(aiBusy)} style={{ ...sideBtn(theme.chipBg, theme.chipC, { fontSize: "0.8rem", padding: "8px 12px", opacity: aiBusy ? 0.55 : 1, cursor: aiBusy ? "not-allowed" : "pointer" }) }}>
+                  {aiBusy === "seo" ? <><Loader2 size={14} className="ap-spin" /> Generating…</> : <><Sparkles size={14} /> Generate SEO with AI</>}
                 </button>
                 <Field label={`Meta title (${(form.meta_title || "").length}/60)`} theme={theme} inp={inp} labelStyle={label}
                   value={form.meta_title} onChange={(v) => set({ meta_title: v })} placeholder={form.title} />
@@ -443,7 +579,6 @@ export default function PostEditor({ token, theme, isMobile, postId, categories,
                   <label style={label}>Meta description ({(form.meta_description || "").length}/160)</label>
                   <textarea value={form.meta_description} onChange={(e) => set({ meta_description: e.target.value })} rows={3} placeholder="Shown in Google results" style={{ ...inp, resize: "vertical", fontSize: "0.85rem" }} />
                 </div>
-                <Field label="Focus keyword" theme={theme} inp={inp} labelStyle={label} value={form.focus_keyword} onChange={(v) => set({ focus_keyword: v })} />
                 <Field label="Keywords (comma separated)" theme={theme} inp={inp} labelStyle={label} value={form.keywords} onChange={(v) => set({ keywords: v })} />
                 <div>
                   <label style={label}>Schema type</label>
@@ -461,7 +596,25 @@ export default function PostEditor({ token, theme, isMobile, postId, categories,
           </div>
         </div>
       </div>
-      <style>{`.ap-spin { animation: apspin 0.8s linear infinite; } @keyframes apspin { to { transform: rotate(360deg); } }`}</style>
+      {/* Always-visible AI status toast */}
+      {aiToast && (
+        <div
+          role="status"
+          aria-live="polite"
+          style={{
+            position: "fixed", bottom: 24, right: 24, zIndex: 400, maxWidth: 360,
+            display: "flex", alignItems: "center", gap: 11, padding: "13px 18px", borderRadius: 12,
+            color: "#fff", fontWeight: 600, fontSize: "0.88rem", fontFamily: TYPOGRAPHY.body,
+            background: aiToast.status === "error" ? "#DC2626" : aiToast.status === "done" ? "#059669" : (theme.dark ? "#111827" : "#1F2937"),
+            boxShadow: "0 14px 44px rgba(0,0,0,0.30)",
+            animation: "apToastIn 0.22s ease-out",
+          }}
+        >
+          {aiToast.status === "loading" ? <Loader2 size={17} className="ap-spin" /> : aiToast.status === "done" ? <Check size={17} /> : <AlertCircle size={17} />}
+          <span>{aiToast.text}</span>
+        </div>
+      )}
+      <style>{`.ap-spin { animation: apspin 0.8s linear infinite; } @keyframes apspin { to { transform: rotate(360deg); } } @keyframes apToastIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }`}</style>
     </div>
   );
 }

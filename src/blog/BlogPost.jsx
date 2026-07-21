@@ -159,6 +159,28 @@ export default function BlogPost() {
           </div>
         )}
 
+        {/* Author box — a visible E-E-A-T signal */}
+        {(post.author_bio || post.author_name) && (
+          <div style={{ display: "flex", gap: 16, marginTop: 40, padding: "22px 24px", borderRadius: 18, background: theme.card, border: `1px solid ${theme.cardBorder}` }}>
+            {post.author_avatar && (
+              <img src={post.author_avatar} alt={post.author_name} style={{ width: 60, height: 60, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />
+            )}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontFamily: TYPOGRAPHY.head, fontWeight: 800, fontSize: "1.02rem" }}>{post.author_name}</div>
+              {post.author_title && <div style={{ color: theme.chipC, fontSize: "0.82rem", fontWeight: 700, marginTop: 1 }}>{post.author_title}</div>}
+              {post.author_bio && <p style={{ color: theme.text2, fontSize: "0.9rem", lineHeight: 1.55, margin: "8px 0 0" }}>{post.author_bio}</p>}
+              {post.author_credentials && <div style={{ color: theme.text3, fontSize: "0.78rem", marginTop: 6 }}>{post.author_credentials}</div>}
+              {(post.author_linkedin || post.author_twitter || post.author_url) && (
+                <div style={{ display: "flex", gap: 14, marginTop: 10, fontSize: "0.82rem", fontWeight: 700 }}>
+                  {post.author_linkedin && <a href={post.author_linkedin} target="_blank" rel="noopener noreferrer nofollow" style={{ color: theme.a2, textDecoration: "none" }}>LinkedIn</a>}
+                  {post.author_twitter && <a href={post.author_twitter} target="_blank" rel="noopener noreferrer nofollow" style={{ color: theme.a2, textDecoration: "none" }}>X / Twitter</a>}
+                  {post.author_url && <a href={post.author_url} target="_blank" rel="noopener noreferrer" style={{ color: theme.a2, textDecoration: "none" }}>Website</a>}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         <div
           style={{
             marginTop: 44,

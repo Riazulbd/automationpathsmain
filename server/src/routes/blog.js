@@ -15,7 +15,8 @@ const LIST_FIELDS =
 const FULL_FIELDS =
   "id,title,slug,excerpt,content,content_text,featured_image,featured_image_alt," +
   "category_id,status,published_at,updated_at,created_at,reading_time,word_count," +
-  "view_count,author_name,author_avatar,meta_title,meta_description,focus_keyword," +
+  "view_count,author_name,author_title,author_bio,author_credentials,author_avatar," +
+  "author_url,author_linkedin,author_twitter,meta_title,meta_description,focus_keyword," +
   "keywords,canonical_url,og_title,og_description,og_image,schema_type,noindex," +
   "category:blog_categories(name,slug,description)";
 

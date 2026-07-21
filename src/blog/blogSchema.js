@@ -9,6 +9,18 @@ export function buildPostSchema(post) {
   const url = post.canonical_url || `${SITE}/blog/${post.slug}`;
   const image = post.og_image || post.featured_image || `${SITE}/og-default.svg`;
 
+  const sameAs = [post.author_linkedin, post.author_twitter, post.author_url].filter(Boolean);
+  const author = {
+    "@type": "Person",
+    name: post.author_name || "Riazul Islam",
+    url: post.author_url || SITE,
+  };
+  if (post.author_title) author.jobTitle = post.author_title;
+  if (post.author_bio) author.description = post.author_bio;
+  if (post.author_credentials) author.knowsAbout = post.author_credentials;
+  if (post.author_avatar) author.image = post.author_avatar;
+  if (sameAs.length) author.sameAs = sameAs;
+
   const article = {
     "@context": "https://schema.org",
     "@type": post.schema_type || "BlogPosting",
@@ -17,7 +29,7 @@ export function buildPostSchema(post) {
     image: [image],
     datePublished: post.published_at || post.created_at,
     dateModified: post.updated_at || post.published_at || post.created_at,
-    author: { "@type": "Person", name: post.author_name || "Riazul Islam", url: SITE },
+    author,
     publisher: {
       "@type": "Organization",
       name: "Automation Paths",

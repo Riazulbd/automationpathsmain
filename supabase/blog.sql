@@ -63,7 +63,13 @@ create table if not exists public.blog_posts (
   view_count          integer not null default 0,  -- denormalized running total
 
   author_name         text not null default 'Riazul Islam',
+  author_title        text,          -- job title / role (E-E-A-T)
+  author_bio          text,
+  author_credentials  text,
   author_avatar       text,
+  author_url          text,          -- personal / company site
+  author_linkedin     text,
+  author_twitter      text,
 
   -- SEO / structured data
   meta_title          text,
@@ -101,6 +107,16 @@ create table if not exists public.blog_post_views (
   country     text,
   city        text
 );
+
+-- ---------------------------------------------------------------------------
+-- Author E-E-A-T columns (safe to re-run on an existing install)
+-- ---------------------------------------------------------------------------
+alter table public.blog_posts add column if not exists author_title       text;
+alter table public.blog_posts add column if not exists author_bio         text;
+alter table public.blog_posts add column if not exists author_credentials text;
+alter table public.blog_posts add column if not exists author_url         text;
+alter table public.blog_posts add column if not exists author_linkedin    text;
+alter table public.blog_posts add column if not exists author_twitter     text;
 
 -- ---------------------------------------------------------------------------
 -- Indexes

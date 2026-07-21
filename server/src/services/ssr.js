@@ -88,6 +88,21 @@ function setSocialImage(html, imageUrl) {
 
 // ---- Schema builders -------------------------------------------------------
 
+function authorSchema(post, siteUrl) {
+  const sameAs = [post.author_linkedin, post.author_twitter, post.author_url].filter(Boolean);
+  const author = {
+    "@type": "Person",
+    name: post.author_name || "Riazul Islam",
+    url: post.author_url || siteUrl,
+  };
+  if (post.author_title) author.jobTitle = post.author_title;
+  if (post.author_bio) author.description = post.author_bio;
+  if (post.author_credentials) author.knowsAbout = post.author_credentials;
+  if (post.author_avatar) author.image = post.author_avatar;
+  if (sameAs.length) author.sameAs = sameAs;
+  return author;
+}
+
 function postSchema(post, siteUrl, url) {
   const image = post.og_image || post.featured_image || `${siteUrl}/og-default.svg`;
   return {
@@ -98,11 +113,7 @@ function postSchema(post, siteUrl, url) {
     image: [image],
     datePublished: post.published_at || post.created_at,
     dateModified: post.updated_at || post.published_at || post.created_at,
-    author: {
-      "@type": "Person",
-      name: post.author_name || "Riazul Islam",
-      url: siteUrl,
-    },
+    author: authorSchema(post, siteUrl),
     publisher: {
       "@type": "Organization",
       name: "Automation Paths",
@@ -185,11 +196,19 @@ export async function renderBlogHtml(baseHtml, pathname) {
     const featured = post.featured_image
       ? `<img src="${escapeHtml(post.featured_image)}" alt="${escapeHtml(post.featured_image_alt || post.title)}" />`
       : "";
+    const byline = post.author_name
+      ? `<p>By ${escapeHtml(post.author_name)}${post.author_title ? `, ${escapeHtml(post.author_title)}` : ""}</p>`
+      : "";
+    const authorBox = post.author_bio
+      ? `<footer><h2>About the author</h2><p><strong>${escapeHtml(post.author_name)}</strong>${post.author_title ? ` — ${escapeHtml(post.author_title)}` : ""}</p><p>${escapeHtml(post.author_bio)}</p>${post.author_credentials ? `<p>${escapeHtml(post.author_credentials)}</p>` : ""}</footer>`
+      : "";
     const inner =
       `<article><h1>${escapeHtml(post.title)}</h1>` +
+      byline +
       (post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : "") +
       featured +
       post.content +
+      authorBox +
       `</article>`;
     out = setSeoContent(out, inner);
     return out;
