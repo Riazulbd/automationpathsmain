@@ -15,9 +15,9 @@ const TYPOGRAPHY = {
 
 const UPWORK_URL = "https://www.upwork.com/freelancers/automationpaths";
 const HOME_CANONICAL_URL = "https://automationpaths.com";
-const HOME_TITLE = "Automation Paths - Revenue Systems Architecture & AI Automation";
+const HOME_TITLE = "Riazul Islam — Marketing Operations & CRM Automation Specialist";
 const HOME_DESCRIPTION =
-  "Riazul Islam builds revenue systems for agencies, coaches, and consultants - CRM architecture, Voice AI agents, SMS AI, and automation pipelines on GoHighLevel, VAPI, and n8n. Top Rated on Upwork with 5,000+ hours and $59.76M in attributed client revenue.";
+  "Riazul Islam is a Bangladesh-based Marketing Operations & CRM Automation Specialist and Revenue Systems Architect, open to relocation opportunities in Europe while continuing to support consultancy clients.";
 const HOME_SCHEMA = [
   {
     "@context": "https://schema.org",
@@ -44,9 +44,10 @@ const HOME_SCHEMA = [
       "@type": "Person",
       "@id": `${HOME_CANONICAL_URL}#founder`,
       name: "Riazul Islam",
-      jobTitle: "Revenue Systems Architect",
+      jobTitle: "Marketing Operations & CRM Automation Specialist",
+      homeLocation: { "@type": "Country", name: "Bangladesh" },
     },
-    areaServed: ["United States", "United Kingdom"],
+    areaServed: ["United States", "United Kingdom", "Europe"],
     sameAs: [UPWORK_URL],
     knowsAbout: [
       "CRM architecture",
@@ -263,7 +264,8 @@ export default function App() {
         { label: "About", href: "/#about" },
         { label: "Services", href: "/#services" },
         { label: "Process", href: "/#process" },
-        { label: "Results", href: "/#results" },
+        { label: "Experience", href: "/#experience" },
+        { label: "Work", href: "/#case-studies" },
         { label: "FAQ", href: "/#faq" },
         { label: "Blog", href: "/blog" },
         { label: "Funnel Quiz", href: "/funnel-quiz" },
@@ -400,7 +402,7 @@ export default function App() {
                 </a>
               ))}
             <a href={UPWORK_URL} target="_blank" rel="noreferrer" style={{ width: isMobile ? "100%" : "auto", padding: isMobile ? "12px 18px" : "8px 20px", background: theme.grad, color: "#fff", borderRadius: 999, fontWeight: 700, fontSize: "0.84rem", textDecoration: "none", boxShadow: `${theme.btnGlow}, inset 0 2px 4px rgba(255,255,255,0.3)`, textAlign: "center" }}>
-              Hire on Upwork -&gt;
+              Work with the consultancy -&gt;
             </a>
           </div>
         </div>
@@ -411,27 +413,25 @@ export default function App() {
           <span style={{ width: 24, height: 24, background: "linear-gradient(135deg,#34D399,#2DD4BF)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.65rem", color: "#fff" }}>
             +
           </span>
-          GoHighLevel + AI automation for agencies fixing revenue systems
+          Bangladesh-based · Open to relocation across Europe
         </div>
 
         <h1 style={{ fontFamily: TYPOGRAPHY.head, fontSize: isMobile ? "clamp(2.15rem,11vw,3.1rem)" : "clamp(4.1rem,7.6vw,6.3rem)", lineHeight: isMobile ? 0.88 : 0.9, letterSpacing: isMobile ? "-0.07em" : "-0.055em", maxWidth: isTablet ? 880 : 1040, marginBottom: isMobile ? 10 : 22, color: theme.text, position: "relative", zIndex: 2 }}>
-          <span style={{ display: "block", fontStyle: "normal", fontWeight: 800, animation: "heroLineIn 0.82s cubic-bezier(0.16,1,0.3,1) both", transformOrigin: "center bottom" }}>Your revenue system is</span>
-          <span style={{ display: "block", fontStyle: "italic", fontWeight: 350, animation: "heroLineIn 0.82s cubic-bezier(0.16,1,0.3,1) 0.12s both", transformOrigin: "center bottom" }}>either compounding or leaking.</span>
-          <span style={{ display: "block", fontStyle: "normal", fontWeight: 800, animation: "heroLineIn 0.82s cubic-bezier(0.16,1,0.3,1) 0.24s both", transformOrigin: "center bottom" }}>
-            Most are <span style={{ color: theme.a1, fontWeight: 700, display: "inline-block", animation: "heroAccentPulse 2.8s ease-in-out 1.1s infinite", willChange: "transform" }}>leaking.</span>
-          </span>
+          <span style={{ display: "block", fontStyle: "normal", fontWeight: 800, animation: "heroLineIn 0.82s cubic-bezier(0.16,1,0.3,1) both", transformOrigin: "center bottom" }}>Marketing Operations</span>
+          <span style={{ display: "block", fontStyle: "italic", fontWeight: 350, animation: "heroLineIn 0.82s cubic-bezier(0.16,1,0.3,1) 0.12s both", transformOrigin: "center bottom" }}>&amp; CRM Automation</span>
+          <span style={{ display: "block", fontStyle: "normal", fontWeight: 800, color: theme.a1, animation: "heroLineIn 0.82s cubic-bezier(0.16,1,0.3,1) 0.24s both", transformOrigin: "center bottom" }}>Specialist</span>
         </h1>
 
         <p style={{ fontSize: isMobile ? "0.9rem" : "1.14rem", color: theme.text2, maxWidth: isMobile ? 322 : 720, lineHeight: isMobile ? 1.58 : 1.78, marginBottom: isMobile ? 16 : 32, position: "relative", zIndex: 2, animation: "heroFadeUp 0.72s ease-out 0.32s both" }}>
-          I build GoHighLevel CRM systems, Voice AI agents, and automation pipelines that generate, qualify, and close revenue — without you babysitting them. Systems that compound.
+          I’m Riazul Islam, a Revenue Systems Architect focused on CRM architecture, lifecycle automation, lead routing, integrations, attribution, and automation QA—for consultancy clients and full-time marketing operations, lifecycle, CRM, and revenue-systems teams.
         </p>
 
         <div style={{ display: isMobile ? "grid" : "flex", gap: isMobile ? 10 : 12, gridTemplateColumns: isMobile ? "repeat(2, minmax(0, 1fr))" : undefined, flexWrap: isMobile ? undefined : "wrap", width: isMobile ? "100%" : "auto", maxWidth: isMobile ? 340 : "none", justifyContent: "center", position: "relative", zIndex: 2, animation: "heroFadeUp 0.72s ease-out 0.44s both" }}>
           <a href={UPWORK_URL} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: isMobile ? "13px 14px" : "15px 30px", width: isMobile ? "100%" : "auto", background: theme.grad, color: "#fff", borderRadius: 999, fontWeight: 700, fontSize: isMobile ? "0.86rem" : "0.95rem", textDecoration: "none", boxShadow: `${theme.btnGlow}, inset 0 2px 6px rgba(255,255,255,0.25)` }}>
-            Hire on Upwork -&gt;
+            Discuss a consultancy project -&gt;
           </a>
-          <a href="/#results" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: isMobile ? "13px 14px" : "15px 26px", width: isMobile ? "100%" : "auto", background: theme.card, color: theme.text, borderRadius: 999, fontWeight: 600, fontSize: isMobile ? "0.86rem" : "0.95rem", textDecoration: "none", boxShadow: clay(), border: `1px solid ${theme.cardBorder}` }}>
-            See Results
+          <a href="/#experience" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: isMobile ? "13px 14px" : "15px 26px", width: isMobile ? "100%" : "auto", background: theme.card, color: theme.text, borderRadius: 999, fontWeight: 600, fontSize: isMobile ? "0.86rem" : "0.95rem", textDecoration: "none", boxShadow: clay(), border: `1px solid ${theme.cardBorder}` }}>
+            View professional experience
           </a>
         </div>
 

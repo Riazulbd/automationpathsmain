@@ -10,12 +10,12 @@ import tonyHeadshot from "./assets/headshots/tony.jpg";
 import zacHeadshot from "./assets/headshots/zac.webp";
 
 const services = [
-  { svg: ["GoHighLevel", "HubSpot", "Salesforce"], title: "GoHighLevel Architecture", description: "GHL-certified CRM builds — multi-pipeline systems, lifecycle automation, lead scoring, and dashboards engineered for how your team actually sells.", tags: ["GoHighLevel", "HubSpot", "Salesforce"] },
+  { svg: ["GoHighLevel", "HubSpot", "Salesforce"], title: "CRM Architecture", description: "Multi-pipeline CRM structures, lifecycle automation, lead scoring, segmentation, and reporting designed around how teams actually work.", tags: ["GoHighLevel", "HubSpot", "Salesforce"] },
   { svg: ["VAPI", "Retell AI", "Twilio"], title: "Voice AI Agents", description: "Production-grade assistants on real phone lines. They qualify, book, handle objections, and keep working after hours.", tags: ["VAPI", "Retell", "Twilio"] },
   { svg: ["OpenAI", "Claude AI"], title: "SMS and Chat AI", description: "Intelligent conversational AI that nurtures leads and knows exactly when to hand off to a human.", tags: ["OpenAI", "Claude", "Custom"] },
   { svg: ["OpenAI", "n8n", "Claude AI"], title: "AI Agent Orchestration", description: "Multi-agent systems that route decisions, trigger actions, and operate across your stack autonomously — no daily babysitting required.", tags: ["OpenAI", "Claude", "n8n"] },
   { svg: ["n8n", "Make"], title: "Automation Pipelines", description: "Complex workflows unifying CRM, AI agents, databases, and every third-party tool into one automated revenue machine.", tags: ["n8n", "Make", "Custom APIs"] },
-  { svg: ["Instantly", "Smartlead", "Google Workspace"], title: "Email Deliverability Systems", description: "Inbox-first architecture built for 40%+ open rates. Domain warming, sending infrastructure, and reputation management so your outbound actually lands.", tags: ["Instantly", "Smartlead", "Google Workspace"] },
+  { svg: ["Instantly", "Smartlead", "Google Workspace"], title: "Email & Lifecycle Operations", description: "Segmentation, sending workflows, deliverability operations, and automation QA for more dependable lifecycle communication.", tags: ["Instantly", "Smartlead", "Google Workspace"] },
   { svg: ["Playwright", "Pipedrive", "Supabase"], title: "Revenue Infrastructure Audits", description: "Systematic diagnosis of your full revenue stack — where leads die, where routing breaks, where conversion drops — delivered as an actionable rebuild plan.", tags: ["GoHighLevel", "Pipedrive", "Supabase"] },
 ];
 
@@ -27,10 +27,10 @@ const processSteps = [
 ];
 
 const stats = [
-  { numeric: 5000, prefix: "", suffix: "+", label: "Hours Delivered", detail: "Across CRM builds, automation systems, AI workflows, and implementation support." },
-  { value: "Top 1%", label: "Upwork Worldwide", detail: "Trusted for high-leverage systems work, not commodity task execution." },
-  { numeric: 12, prefix: "", suffix: "+", label: "Platforms Mastered", detail: "From GoHighLevel and HubSpot to Twilio, n8n, Playwright, and Supabase." },
-  { numeric: 59.76, prefix: "$", suffix: "M", label: "Revenue Attributed", detail: "Across voice AI, SMS automation, CRM buildouts, and revenue system engagements." },
+  { value: "Extensive", label: "Client Delivery", detail: "Hands-on delivery across CRM builds, lifecycle automation, integrations, and implementation support." },
+  { value: "Public", label: "Upwork Profile", detail: "A channel for reviewing consultancy history and client feedback." },
+  { value: "End to end", label: "Systems Ownership", detail: "Architecture, implementation, testing, documentation, reporting, and handoff." },
+  { value: "Remote", label: "Europe Relocation", detail: "Based in Bangladesh and open to relocation; no European work-authorisation claim is made." },
 ];
 
 const testimonials = [
@@ -820,6 +820,27 @@ export default function BelowFoldSections({ theme, isMobile, isTablet, clay, typ
         </div>
       </section>
 
+      <section id="experience" style={{ padding: isMobile ? "64px 16px" : "80px 20px", position: "relative", zIndex: 1 }}>
+        <div style={{ maxWidth: 1140, margin: "0 auto", display: "grid", gridTemplateColumns: isTablet ? "1fr" : "0.9fr 1.1fr", gap: 18, alignItems: "stretch" }}>
+          <div style={{ background: `linear-gradient(135deg,${theme.bgDark},${theme.card})`, border: `1px solid ${theme.cardBorder}`, borderRadius: 30, padding: isMobile ? 24 : 34, boxShadow: clay(theme.cardGlow) }}>
+            <SectionLabel theme={theme} clay={clay} typography={typography}>Professional profile</SectionLabel>
+            <h2 style={{ fontFamily: typography.head, fontSize: "clamp(2rem,4vw,3.1rem)", lineHeight: 1.08, letterSpacing: "-0.04em", color: theme.text, margin: "18px 0 14px" }}>Consultancy delivery with in-house operations relevance.</h2>
+            <p style={{ color: theme.text2, lineHeight: 1.75, margin: 0 }}>I run Automation Paths as an automation consultancy and am also open to full-time CRM, marketing automation, marketing operations, lifecycle, and revenue-systems roles in Europe. I am currently based in Bangladesh and would require the appropriate relocation and work-authorisation route.</p>
+          </div>
+          <div style={{ background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 30, padding: isMobile ? 24 : 34, boxShadow: clay(theme.cardGlow) }}>
+            <h3 style={{ fontFamily: typography.head, color: theme.text, fontSize: "1.35rem", margin: "0 0 18px" }}>Verified areas of focus</h3>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 9, marginBottom: 24 }}>
+              {["CRM architecture", "Lifecycle email & SMS automation", "Lead routing & segmentation", "APIs & webhooks", "Workflow integrations", "Attribution & reporting", "Automation QA", "n8n", "Zapier"].map((skill) => <span key={skill} style={{ padding: "8px 11px", borderRadius: 999, background: theme.tagBg, color: theme.tagC, fontSize: "0.82rem", fontWeight: 650 }}>{skill}</span>)}
+            </div>
+            <p style={{ color: theme.text2, lineHeight: 1.7, margin: "0 0 18px" }}>Recruiters can review the selected work below or contact me directly. Consultancy clients can continue to use the established Upwork route.</p>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+              <a href="mailto:hello@automationpaths.com?subject=Full-time%20role%20in%20Europe" style={{ padding: "12px 18px", borderRadius: 999, background: theme.grad, color: "#fff", textDecoration: "none", fontWeight: 700 }}>Email about a full-time role</a>
+              <a href={upworkUrl} target="_blank" rel="noreferrer" style={{ padding: "12px 18px", borderRadius: 999, background: theme.card, color: theme.text, border: `1px solid ${theme.cardBorder}`, textDecoration: "none", fontWeight: 700 }}>View Upwork profile</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="services" style={{ padding: isMobile ? "64px 16px" : "80px 20px", position: "relative", zIndex: 1 }}>
         <div style={{ maxWidth: 1140, margin: "0 auto" }}>
           <SectionReveal>
@@ -887,10 +908,10 @@ export default function BelowFoldSections({ theme, isMobile, isTablet, clay, typ
             How I Work
           </div>
           <h2 style={{ fontFamily: typography.head, fontSize: "clamp(2.1rem,4vw,3.2rem)", fontWeight: 900, lineHeight: 1.08, letterSpacing: "-0.03em", color: theme.text, marginBottom: 12 }}>
-            Think fractional CTO. <GradText>Not freelancer.</GradText>
+            Architecture through handoff. <GradText>Not just configuration.</GradText>
           </h2>
           <p style={{ fontSize: "1rem", color: theme.text2, maxWidth: 500, lineHeight: 1.7, marginBottom: 40 }}>
-            I diagnose bottlenecks, design architecture, ship infrastructure, and optimize for compound returns.
+            I map requirements, design workflows, implement integrations, test edge cases, document the system, and support a clean handoff.
           </p>
           <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fit, minmax(220px, 1fr))", gap: 14, width: "100%" }}>
             {processSteps.map((step) => (
@@ -1021,20 +1042,19 @@ export default function BelowFoldSections({ theme, isMobile, isTablet, clay, typ
         <div style={{ maxWidth: 760, margin: "0 auto", background: `linear-gradient(135deg,${theme.chipBg},rgba(255,230,230,0.06),${theme.tagBg})`, border: `1px solid ${theme.cardBorder}`, borderRadius: isMobile ? 28 : 36, padding: isMobile ? "40px 22px" : "56px 36px", boxShadow: `0 4px 8px rgba(0,0,0,${theme.iD}), 0 20px 50px rgba(0,0,0,${theme.iD * 1.5}), 0 40px 100px rgba(0,0,0,${theme.iD}), ${theme.cardGlow}` }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "5px 14px 5px 6px", background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, fontFamily: typography.mono, fontSize: "0.7rem", fontWeight: 500, color: theme.chipC, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 16, boxShadow: clay() }}>
             <span style={{ width: 18, height: 18, borderRadius: "50%", background: theme.grad }} />
-            Limited Availability
+            Consultancy or full-time
           </div>
           <h2 style={{ fontFamily: typography.head, fontSize: "clamp(1.9rem,3.5vw,2.7rem)", fontWeight: 900, lineHeight: 1.1, letterSpacing: "-0.03em", color: theme.text, marginBottom: 12 }}>
-            Your revenue system is either
+            Need a systems partner—or a
             <br />
-            <GradText>compounding or leaking.</GradText>
+            <GradText>marketing operations specialist?</GradText>
           </h2>
           <p style={{ fontSize: "1.02rem", color: theme.text2, maxWidth: 450, margin: "0 auto 28px", lineHeight: 1.7 }}>
-            Message me your current setup and your biggest bottleneck. I'll tell you exactly what needs to be fixed - and whether I'm the right person to fix it.
+            For consultancy work, share the workflow or CRM challenge. For a full-time role, tell me about the team, scope, location, and relocation process.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", flexDirection: isMobile ? "column" : "row" }}>
-            <a href={upworkUrl} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "15px 28px", width: isMobile ? "100%" : "auto", background: theme.grad, color: "#fff", borderRadius: 999, fontWeight: 700, fontSize: "0.95rem", textDecoration: "none", boxShadow: `${theme.btnGlow}, inset 0 2px 6px rgba(255,255,255,0.25)` }}>
-              Hire on Upwork -&gt;
-            </a>
+            <a href="mailto:hello@automationpaths.com" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "15px 28px", width: isMobile ? "100%" : "auto", background: theme.grad, color: "#fff", borderRadius: 999, fontWeight: 700, fontSize: "0.95rem", textDecoration: "none", boxShadow: `${theme.btnGlow}, inset 0 2px 6px rgba(255,255,255,0.25)` }}>Email Riazul</a>
+            <a href={upworkUrl} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "15px 24px", width: isMobile ? "100%" : "auto", background: theme.card, color: theme.text, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, fontWeight: 700, textDecoration: "none" }}>Upwork profile</a>
           </div>
         </div>
       </section>

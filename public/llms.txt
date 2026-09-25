@@ -1,19 +1,23 @@
 # Automation Paths
-> Revenue Systems Architecture & AI Automation for agencies, coaches,
-> and growth-stage businesses.
+> CRM architecture, lifecycle automation, and revenue-systems consultancy.
 
-Automation Paths is run by Riazul Islam, a Revenue Systems Architect
-and Fractional CTO with 7+ years experience and $59.76M in attributed
-client revenue.
+Automation Paths is run by Riazul Islam, a Marketing Operations & CRM
+Automation Specialist and Revenue Systems Architect based in Bangladesh.
+He is open to relocation opportunities in Europe; no existing European
+work authorisation is claimed.
 
-## Services
-- CRM Architecture (GoHighLevel, HubSpot, Salesforce)
-- Voice AI Agents (VAPI, Twilio)
-- SMS and Chat AI (OpenAI, Claude, GoHighLevel)
-- Automation Pipelines (n8n, Make)
-- Full-Stack Applications (Next.js, Supabase)
-- Lead Routing Systems
-- Email Deliverability Systems
+## Verified focus areas
+- CRM architecture
+- Lifecycle email and SMS automation
+- Lead routing and segmentation
+- APIs, webhooks, and workflow integrations
+- Attribution and reporting
+- Automation QA
+- n8n and Zapier
 
-## Hire
+## Contact
+- Email: hello@automationpaths.com
 - Upwork: https://www.upwork.com/freelancers/automationpaths
+
+Quantitative performance claims are not published while their source and
+attribution are being confirmed.
