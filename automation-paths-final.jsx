@@ -2,6 +2,7 @@ import React, { Suspense, lazy, useEffect, useState } from "react";
 import automationPathsBrandLogo from "./Automation Paths Logo (3).png";
 import SEOHead from "./src/SEOHead.jsx";
 import Icon from "./src/icons/Icon.jsx";
+import { BLOG_ENABLED } from "./src/features.js";
 import vapiLogo from "./src/assets/logos/VAPI.svg";
 import zapierLogo from "./src/assets/logos/zapier-2.svg";
 
@@ -271,7 +272,7 @@ export default function App() {
         { label: "Experience", href: "/#experience" },
         { label: "Work", href: "/#case-studies" },
         { label: "FAQ", href: "/#faq" },
-        { label: "Blog", href: "/blog" },
+        ...(BLOG_ENABLED ? [{ label: "Blog", href: "/blog" }] : []),
         { label: "Funnel Quiz", href: "/funnel-quiz" },
       ];
 

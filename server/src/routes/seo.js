@@ -3,6 +3,7 @@ import { Feed } from "feed";
 import { sbSelect } from "../config/supabase.js";
 import { getSiteUrl } from "../services/ssr.js";
 import { truncate, escapeHtml } from "../utils/blog.js";
+import { BLOG_ENABLED } from "../config/features.js";
 
 // SEO endpoints: sitemap.xml, feed.xml, robots.txt.
 // These are what get new posts discovered and indexed by Google automatically.
@@ -12,7 +13,7 @@ const router = express.Router();
 // Static, always-indexable pages.
 const STATIC_PAGES = [
   { loc: "/", priority: "1.0", changefreq: "weekly" },
-  { loc: "/blog", priority: "0.9", changefreq: "daily" },
+  ...(BLOG_ENABLED ? [{ loc: "/blog", priority: "0.9", changefreq: "daily" }] : []),
 ];
 
 async function fetchPublished() {
@@ -28,12 +29,14 @@ router.get("/sitemap.xml", async (_req, res) => {
   let posts = [];
   let categories = [];
   let tags = [];
-  try {
-    posts = await fetchPublished();
-    categories = (await sbSelect("blog_categories", "select=slug")).rows;
-    tags = (await sbSelect("blog_tags", "select=slug")).rows;
-  } catch {
-    /* fall through — still emit static pages */
+  if (BLOG_ENABLED) {
+    try {
+      posts = await fetchPublished();
+      categories = (await sbSelect("blog_categories", "select=slug")).rows;
+      tags = (await sbSelect("blog_tags", "select=slug")).rows;
+    } catch {
+      /* fall through — still emit static pages */
+    }
   }
 
   const urls = [
@@ -65,6 +68,10 @@ router.get("/sitemap.xml", async (_req, res) => {
 });
 
 router.get("/feed.xml", async (_req, res) => {
+  if (!BLOG_ENABLED) {
+    res.status(404).type("text/plain").send("Not found");
+    return;
+  }
   const site = getSiteUrl();
   const feed = new Feed({
     title: "Automation Paths Blog",

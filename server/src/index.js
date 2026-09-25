@@ -26,6 +26,7 @@ import adminBlogRoutes from "./routes/adminBlog.js";
 import seoRoutes from "./routes/seo.js";
 import { renderBlogHtml } from "./services/ssr.js";
 import { getJwtSecret } from "./utils/auth.js";
+import { BLOG_ENABLED } from "./config/features.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
@@ -72,9 +73,16 @@ app.use(morgan("dev"));
 app.use("/uploads", express.static(getUploadsRoot()));
 
 app.use("/api/auth", authRoutes);
-app.use("/api/dashboard/blog", adminBlogRoutes);
+if (BLOG_ENABLED) {
+  app.use("/api/dashboard/blog", adminBlogRoutes);
+}
 app.use("/api/dashboard", dashboardRoutes);
-app.use("/api/blog", blogRoutes);
+if (BLOG_ENABLED) {
+  app.use("/api/blog", blogRoutes);
+} else {
+  // Blog is switched off: send any old /blog links to the homepage.
+  app.get(["/blog", "/blog/*"], (_req, res) => res.redirect(302, "/"));
+}
 app.use("/", seoRoutes);
 
 if (frontendDistPath) {
@@ -92,7 +100,7 @@ if (frontendDistPath) {
 
     // Blog pages get server-side SEO injection (title/meta/OG/JSON-LD + article
     // text) so they index and share correctly. Everything else gets the SPA shell.
-    if (req.path.startsWith("/blog")) {
+    if (BLOG_ENABLED && req.path.startsWith("/blog")) {
       try {
         const rendered = await renderBlogHtml(cachedFrontendIndexHtml, req.path);
         if (rendered) {
@@ -108,7 +116,9 @@ if (frontendDistPath) {
   });
 }
 
-startScheduler(db);
+if (BLOG_ENABLED) {
+  startScheduler(db);
+}
 
 app.listen(PORT, () => {
   console.log(`[server] API running on http://localhost:${PORT}`);

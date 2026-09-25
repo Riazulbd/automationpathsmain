@@ -2,6 +2,7 @@ import React, { Suspense, lazy, useEffect, useRef } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import AutomationPathsSite from "../automation-paths-final.jsx";
 import { trackPageview, initClickTracking } from "./analytics.js";
+import { BLOG_ENABLED } from "./features.js";
 
 const FunnelQuiz = lazy(() => import("./quiz/FunnelQuiz.jsx"));
 const Dashboard = lazy(() => import("./quiz/Dashboard.jsx"));
@@ -53,10 +54,14 @@ export default function App() {
           <Route path="/" element={<AutomationPathsSite />} />
           <Route path="/funnel-quiz" element={<FunnelQuiz />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/blog" element={<BlogIndex />} />
-          <Route path="/blog/category/:slug" element={<BlogIndex taxonomy="category" />} />
-          <Route path="/blog/tag/:slug" element={<BlogIndex taxonomy="tag" />} />
-          <Route path="/blog/:slug" element={<BlogPost />} />
+          {BLOG_ENABLED && (
+            <>
+              <Route path="/blog" element={<BlogIndex />} />
+              <Route path="/blog/category/:slug" element={<BlogIndex taxonomy="category" />} />
+              <Route path="/blog/tag/:slug" element={<BlogIndex taxonomy="tag" />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
+            </>
+          )}
           {/* Legacy path → new location */}
           <Route path="/funnel-quiz/admin" element={<Navigate to="/dashboard" replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />

@@ -4,8 +4,12 @@ WORKDIR /app
 # expose (protected by RLS). Pass with: --build-arg VITE_SUPABASE_URL=... etc.
 ARG VITE_SUPABASE_URL=""
 ARG VITE_SUPABASE_ANON_KEY=""
+# Blog is off unless built with --build-arg VITE_BLOG_ENABLED=true (the server
+# also needs BLOG_ENABLED=true at runtime).
+ARG VITE_BLOG_ENABLED=""
 ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
 ENV VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
+ENV VITE_BLOG_ENABLED=$VITE_BLOG_ENABLED
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .

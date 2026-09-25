@@ -1,6 +1,7 @@
 import React, { Suspense, lazy, useCallback, useEffect, useMemo, useState } from "react";
 import SEOHead from "../SEOHead.jsx";
 import Icon from "../icons/Icon.jsx";
+import { BLOG_ENABLED } from "../features.js";
 import automationPathsBrandLogo from "../../Automation Paths Logo (3).png";
 import { TYPOGRAPHY, useSessionTheme, makeClay } from "./theme.js";
 import { PROFILE_QUESTIONS, DIAGNOSTIC_QUESTIONS, CATEGORIES } from "./quizData.js";
@@ -193,7 +194,7 @@ export default function Dashboard() {
           {tab === "submissions" && (
             <Submissions theme={theme} clay={clay} isMobile={isMobile} submissions={submissions} loading={loading} onOpen={setDetail} />
           )}
-          {tab === "blog" && (
+          {BLOG_ENABLED && tab === "blog" && (
             <Suspense fallback={<div style={{ padding: 40, textAlign: "center", color: theme.text3 }}>Loading editor…</div>}>
               <BlogAdmin token={token} theme={theme} isMobile={isMobile} onExpired={onExpired} />
             </Suspense>
@@ -230,7 +231,7 @@ function Tabs({ theme, tab, setTab, isMobile }) {
   const items = [
     { id: "overview", label: "Overview" },
     { id: "submissions", label: "Submissions" },
-    { id: "blog", label: "Blog" },
+    ...(BLOG_ENABLED ? [{ id: "blog", label: "Blog" }] : []),
   ];
   return (
     <div style={{ display: "inline-flex", gap: 4, padding: 4, background: theme.chipBg, borderRadius: 999, marginBottom: 20 }}>
