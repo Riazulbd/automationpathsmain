@@ -7,7 +7,7 @@ import { buttonStyle, inputStyle, panelStyle } from "./ui";
 export default function AdminLogin() {
   const theme = useTheme();
   const { user, login } = useAuth();
-  const [email, setEmail] = useState("hello@automationpaths.com");
+  const [email, setEmail] = useState("riaz@automationpaths.com");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);

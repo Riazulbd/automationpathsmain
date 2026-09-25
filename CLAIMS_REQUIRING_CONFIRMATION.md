@@ -19,4 +19,4 @@ Before restoring any claim, provide a source (platform screenshot/export, client
 
 ## Contact links still needed
 
-No public LinkedIn URL or CV/portfolio document was present in the repository. Add only owner-approved URLs/files before publishing those contact options. The repository did contain `hello@automationpaths.com` in existing administration UI and the existing public Upwork URL, so those are the only contact paths added in this revision.
+No public LinkedIn URL or CV/portfolio document was present in the repository. Add only owner-approved URLs/files before publishing those contact options. The repository did contain `riaz@automationpaths.com` in existing administration UI and the existing public Upwork URL, so those are the only contact paths added in this revision.

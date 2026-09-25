@@ -399,7 +399,10 @@ function TopBar({ theme, clay, isMobile }) {
           rel="noreferrer"
           className="fq-btn"
           style={{
-            padding: isMobile ? "8px 14px" : "9px 20px",
+            padding: isMobile ? "10px 16px" : "10px 20px",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
             background: theme.grad,
             color: "#fff",
             borderRadius: 999,

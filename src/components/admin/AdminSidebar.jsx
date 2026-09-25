@@ -78,7 +78,7 @@ export default function AdminSidebar({ collapsed, onToggle, user, onLogout, stac
           <div>
             <div style={{ fontFamily: "Outfit, sans-serif", color: theme.text }}>{user?.name || "Admin"}</div>
             <div style={{ fontFamily: "Manrope, sans-serif", color: theme.text3, fontSize: "0.9rem" }}>
-              {user?.email || "hello@automationpaths.com"}
+              {user?.email || "riaz@automationpaths.com"}
             </div>
           </div>
         ) : null}

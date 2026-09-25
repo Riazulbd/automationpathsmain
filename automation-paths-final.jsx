@@ -5,6 +5,10 @@ import Icon from "./src/icons/Icon.jsx";
 import { BLOG_ENABLED } from "./src/features.js";
 import vapiLogo from "./src/assets/logos/VAPI.svg";
 import zapierLogo from "./src/assets/logos/zapier-2.svg";
+import cloudflareWordmark from "./src/assets/logos/cloudflare-wordmark.png";
+import dockerWordmark from "./src/assets/logos/docker-wordmark.svg";
+import n8nWordmark from "./src/assets/logos/n8n-wordmark.svg";
+import { BRAND_MARKS, BrandMark } from "./src/brandLogos.jsx";
 
 const BelowFoldSections = lazy(() => import("./src/BelowFoldSections.jsx"));
 
@@ -71,12 +75,12 @@ const THEMES = [
 const platformLogos = [
   { name: "HubSpot", kind: "fallback", icon: "HubSpot", color: "#33475B" },
   { name: "Twilio", kind: "fallback", icon: "Twilio", color: "#F22F46" },
-  { name: "Docker", kind: "fallback", icon: "Docker", color: "#2496ED" },
-  { name: "Cloudflare", kind: "fallback", icon: "Cloudflare", color: "#F48120" },
+  { name: "Docker", kind: "image", src: dockerWordmark, imageHeight: 22, imageWidth: 1250, imageIntrinsicHeight: 268 },
+  { name: "Cloudflare", kind: "image", src: cloudflareWordmark, imageHeight: 28, imageWidth: 512, imageIntrinsicHeight: 173 },
   { name: "Supabase", kind: "fallback", icon: "Supabase", color: "#0F172A" },
   { name: "GoHighLevel", kind: "fallback", icon: "GoHighLevel", color: "#1F2937" },
   { name: "Pipedrive", kind: "text", color: "#17313B" },
-  { name: "n8n", kind: "fallback", icon: "n8n", color: "#111827" },
+  { name: "n8n", kind: "image", src: n8nWordmark, imageHeight: 22, imageWidth: 576, imageIntrinsicHeight: 160 },
   { name: "Make", kind: "fallback", icon: "Make", color: "#111827" },
   { name: "VAPI", kind: "image", src: vapiLogo, imageHeight: 22, imageWidth: 1374, imageIntrinsicHeight: 390 },
   { name: "Zapier", kind: "image", src: zapierLogo, imageHeight: 18, imageWidth: 2500, imageIntrinsicHeight: 676 },
@@ -101,6 +105,7 @@ const heroPrinciples = [
 ];
 
 const LogoSVG = ({ name, size = 20 }) => {
+  if (BRAND_MARKS[name]) return <BrandMark name={name} size={size} />;
   const icons = {
     GoHighLevel: (
       <>
@@ -263,6 +268,7 @@ export default function App() {
   const theme = THEMES[themeIndex];
   const isMobile = viewportWidth < 768;
   const isTablet = viewportWidth < 1024;
+  const isCompactNav = viewportWidth < 1140;
   const navigationItems = isMobile
     ? []
     : [
@@ -286,7 +292,7 @@ export default function App() {
         color: theme.text,
         fontFamily: TYPOGRAPHY.body,
         minHeight: "100vh",
-        overflowX: "hidden",
+        overflowX: "clip",
         position: "relative",
       }}
     >
@@ -373,11 +379,11 @@ export default function App() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            flexWrap: isTablet ? "wrap" : "nowrap",
+            flexWrap: isCompactNav ? "wrap" : "nowrap",
             gap: 12,
             background: theme.navBg,
             backdropFilter: "blur(22px) saturate(1.5)",
-            borderRadius: isTablet ? 28 : 999,
+            borderRadius: isCompactNav ? 28 : 999,
             padding: isMobile ? "12px 14px" : "8px 10px 8px 22px",
             boxShadow: clay(theme.cardGlow),
             border: `1px solid ${theme.navBorder}`,
@@ -400,16 +406,18 @@ export default function App() {
             />
           </div>
 
-          <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap", width: isMobile ? "100%" : isTablet ? "100%" : "auto", justifyContent: isMobile ? "flex-start" : isTablet ? "space-between" : "flex-end" }}>
-            {navigationItems.map((item) => (
-                <a key={item.label} href={item.href} style={{ color: theme.text2, textDecoration: "none", fontSize: "0.84rem", fontWeight: 600, padding: "6px 14px", borderRadius: 999 }}>
+          {navigationItems.length > 0 && (
+            <div style={{ display: "flex", gap: isCompactNav ? 2 : 6, alignItems: "center", flexWrap: "wrap", order: isCompactNav ? 3 : undefined, width: isCompactNav ? "100%" : "auto", marginLeft: isCompactNav ? 0 : "auto", justifyContent: isCompactNav ? "center" : "flex-end" }}>
+              {navigationItems.map((item) => (
+                <a key={item.label} href={item.href} style={{ color: theme.text2, textDecoration: "none", fontSize: "0.84rem", fontWeight: 600, padding: isCompactNav ? "10px 12px" : "6px 14px", borderRadius: 999, whiteSpace: "nowrap" }}>
                   {item.label}
                 </a>
               ))}
-            <a href={UPWORK_URL} target="_blank" rel="noreferrer" style={{ width: isMobile ? "100%" : "auto", padding: isMobile ? "12px 18px" : "8px 20px", background: theme.grad, color: "#fff", borderRadius: 999, fontWeight: 700, fontSize: "0.84rem", textDecoration: "none", boxShadow: `${theme.btnGlow}, inset 0 2px 4px rgba(255,255,255,0.3)`, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
-              Work with the consultancy <Icon name="arrow-right" size={16} />
-            </a>
-          </div>
+            </div>
+          )}
+          <a href={UPWORK_URL} target="_blank" rel="noreferrer" style={{ order: isCompactNav && !isMobile ? 2 : undefined, width: isMobile ? "100%" : "auto", minHeight: isMobile ? 46 : 38, padding: isMobile ? "12px 18px" : "8px 20px", background: theme.grad, color: "#fff", borderRadius: 999, fontWeight: 700, fontSize: "0.84rem", textDecoration: "none", whiteSpace: "nowrap", boxShadow: `${theme.btnGlow}, inset 0 2px 4px rgba(255,255,255,0.3)`, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+            Work with the consultancy <Icon name="arrow-right" size={16} />
+          </a>
         </div>
       </nav>
 
@@ -431,17 +439,17 @@ export default function App() {
           I’m Riazul Islam, a Revenue Systems Architect focused on CRM architecture, lifecycle automation, lead routing, integrations, attribution, and automation QA—for consultancy clients and full-time marketing operations, lifecycle, CRM, and revenue-systems teams.
         </p>
 
-        <div style={{ display: isMobile ? "grid" : "flex", gap: isMobile ? 10 : 12, gridTemplateColumns: isMobile ? "repeat(2, minmax(0, 1fr))" : undefined, flexWrap: isMobile ? undefined : "wrap", width: isMobile ? "100%" : "auto", maxWidth: isMobile ? 340 : "none", justifyContent: "center", position: "relative", zIndex: 2, animation: "heroFadeUp 0.72s ease-out 0.44s both" }}>
-          <a href={UPWORK_URL} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: isMobile ? "13px 14px" : "15px 30px", width: isMobile ? "100%" : "auto", background: theme.grad, color: "#fff", borderRadius: 999, fontWeight: 700, fontSize: isMobile ? "0.86rem" : "0.95rem", textDecoration: "none", boxShadow: `${theme.btnGlow}, inset 0 2px 6px rgba(255,255,255,0.25)` }}>
+        <div style={{ display: isMobile ? "grid" : "flex", gap: isMobile ? 10 : 12, gridTemplateColumns: isMobile ? "1fr" : undefined, flexWrap: isMobile ? undefined : "wrap", width: isMobile ? "100%" : "auto", maxWidth: isMobile ? 340 : "none", justifyContent: "center", position: "relative", zIndex: 2, animation: "heroFadeUp 0.72s ease-out 0.44s both" }}>
+          <a href={UPWORK_URL} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: isMobile ? "14px 18px" : "15px 30px", minHeight: isMobile ? 50 : undefined, width: isMobile ? "100%" : "auto", whiteSpace: "nowrap", background: theme.grad, color: "#fff", borderRadius: 999, fontWeight: 700, fontSize: isMobile ? "0.86rem" : "0.95rem", textDecoration: "none", boxShadow: `${theme.btnGlow}, inset 0 2px 6px rgba(255,255,255,0.25)` }}>
             Discuss a consultancy project <Icon name="arrow-right" size={16} />
           </a>
-          <a href="/#experience" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: isMobile ? "13px 14px" : "15px 26px", width: isMobile ? "100%" : "auto", background: theme.card, color: theme.text, borderRadius: 999, fontWeight: 600, fontSize: isMobile ? "0.86rem" : "0.95rem", textDecoration: "none", boxShadow: clay(), border: `1px solid ${theme.cardBorder}` }}>
+          <a href="/#experience" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: isMobile ? "14px 18px" : "15px 26px", minHeight: isMobile ? 50 : undefined, width: isMobile ? "100%" : "auto", whiteSpace: "nowrap", background: theme.card, color: theme.text, borderRadius: 999, fontWeight: 600, fontSize: isMobile ? "0.86rem" : "0.95rem", textDecoration: "none", boxShadow: clay(), border: `1px solid ${theme.cardBorder}` }}>
             View professional experience
           </a>
         </div>
 
-        <a href="/funnel-quiz" style={{ display: "inline-flex", alignItems: "center", gap: 8, marginTop: isMobile ? 14 : 20, padding: isMobile ? "8px 16px" : "9px 20px", background: theme.chipBg, color: theme.chipC, borderRadius: 999, fontWeight: 700, fontSize: isMobile ? "0.8rem" : "0.88rem", textDecoration: "none", position: "relative", zIndex: 2, animation: "heroFadeUp 0.72s ease-out 0.5s both" }}>
-          <Icon name="stethoscope" size={18} /> Take the free Funnel Health Quiz — 6 min <Icon name="arrow-right" size={16} />
+        <a href="/funnel-quiz" style={{ display: "inline-flex", alignItems: "center", gap: 8, marginTop: isMobile ? 14 : 20, padding: isMobile ? "11px 16px" : "9px 20px", minHeight: isMobile ? 44 : undefined, background: theme.chipBg, color: theme.chipC, borderRadius: 999, fontWeight: 700, fontSize: isMobile ? "0.8rem" : "0.88rem", textDecoration: "none", position: "relative", zIndex: 2, animation: "heroFadeUp 0.72s ease-out 0.5s both" }}>
+          <Icon name="stethoscope" size={18} /> Take the free Funnel Health Quiz{viewportWidth < 360 ? "" : " — 6 min"} <Icon name="arrow-right" size={16} />
         </a>
 
         <div className="hero-scroll" style={{ width: "100%", maxWidth: 1140, marginTop: isMobile ? 14 : 34, display: isMobile ? "flex" : "grid", gridTemplateColumns: isMobile ? undefined : "repeat(3, minmax(0, 1fr))", gap: isMobile ? 10 : 14, position: "relative", zIndex: 2, overflowX: isMobile ? "auto" : "visible", paddingBottom: isMobile ? 4 : 0, scrollSnapType: isMobile ? "x mandatory" : "none", animation: "heroFadeUp 0.76s ease-out 0.56s both" }}>

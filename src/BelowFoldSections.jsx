@@ -4,6 +4,7 @@ import automationPathsBrandLogo from "../Automation Paths Logo (3).png";
 import abidinHeadshot from "./assets/headshots/abidin.webp";
 import CaseStudiesSection from "./CaseStudiesSection.jsx";
 import Icon from "./icons/Icon.jsx";
+import { BRAND_MARKS, BrandMark } from "./brandLogos.jsx";
 import loganHeadshot from "./assets/headshots/logan.webp";
 import orianaHeadshot from "./assets/headshots/oriana.webp";
 import ralphHeadshot from "./assets/headshots/ralph.webp";
@@ -171,6 +172,7 @@ const strongFitItems = [
 ];
 
 const LogoSVG = ({ name, size = 20 }) => {
+  if (BRAND_MARKS[name]) return <BrandMark name={name} size={size} />;
   const icons = {
     GoHighLevel: (
       <>
@@ -431,200 +433,271 @@ const SectionLabel = ({ theme, clay, typography, children }) => (
   </div>
 );
 
-const ServiceCard = ({ service, index, theme, compact, clay, typography }) => {
-  const [hovered, setHovered] = useState(false);
-  const [visible, setVisible] = useState(false);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const ref = useRef(null);
-  const rectRef = useRef(null);
-  const frameRef = useRef(null);
-  const nextTiltRef = useRef({ x: 0, y: 0 });
+// Tag names in `services` are short labels; map them to the logo keys LogoSVG knows.
+const TOOL_ALIASES = { Retell: "Retell AI", Claude: "Claude AI" };
+const TOOL_LABELS = { "Retell AI": "Retell AI", "Claude AI": "Claude" };
+const TOOLS_WITHOUT_LOGO = new Set(["Custom", "Custom APIs"]);
 
-  useEffect(() => {
-    const element = ref.current;
-    if (!element || typeof IntersectionObserver === "undefined") {
-      setVisible(true);
-      return undefined;
-    }
+function serviceStack(service) {
+  const names = [...service.svg, ...service.tags].map((name) => TOOL_ALIASES[name] || name);
+  return [...new Set(names)];
+}
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => setVisible(true), index * 120);
-          observer.unobserve(element);
-        }
-      },
-      { threshold: 0.15 }
-    );
-
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, [index]);
-
-  useEffect(() => () => {
-    if (frameRef.current) {
-      cancelAnimationFrame(frameRef.current);
-    }
-  }, []);
-
-  const flushTilt = useCallback(() => {
-    frameRef.current = null;
-    setTilt(nextTiltRef.current);
-  }, []);
-
-  const handleMove = useCallback(
-    (event) => {
-      if (compact) return;
-      const rect = rectRef.current ?? ref.current?.getBoundingClientRect();
-      if (!rect) return;
-      const x = ((event.clientX - rect.left) / rect.width - 0.5) * 8;
-      const y = ((event.clientY - rect.top) / rect.height - 0.5) * -8;
-      nextTiltRef.current = { x, y };
-      if (!frameRef.current) {
-        frameRef.current = requestAnimationFrame(flushTilt);
-      }
-    },
-    [compact, flushTilt]
-  );
-
-  const active = hovered && !compact;
-
+const ToolTile = ({ name, theme, typography, compact }) => {
+  const hasLogo = !TOOLS_WITHOUT_LOGO.has(name);
   return (
-    <div
-      ref={ref}
-      onMouseEnter={
-        compact
-          ? undefined
-          : () => {
-              rectRef.current = ref.current?.getBoundingClientRect() ?? null;
-              setHovered(true);
-            }
-      }
-      onMouseLeave={
-        compact
-          ? undefined
-          : () => {
-              if (frameRef.current) {
-                cancelAnimationFrame(frameRef.current);
-                frameRef.current = null;
-              }
-              rectRef.current = null;
-              setHovered(false);
-              setTilt({ x: 0, y: 0 });
-            }
-      }
-      onMouseMove={compact ? undefined : handleMove}
-      style={{
-        background: theme.card,
-        border: `1.5px solid ${active ? theme.hoverBorder : theme.cardBorder}`,
-        borderRadius: compact ? 22 : 24,
-        padding: compact ? "24px 18px 20px" : "30px 24px 24px",
-        position: "relative",
-        overflow: "hidden",
-        transform: visible
-          ? compact
-            ? "translateY(0) scale(1)"
-            : `perspective(800px) rotateX(${tilt.y}deg) rotateY(${tilt.x}deg) translateY(${active ? -10 : 0}px) scale(${active ? 1.02 : 1})`
-          : "translateY(50px) scale(0.92)",
-        opacity: visible ? 1 : 0,
-        boxShadow: active
-          ? `0 4px 8px rgba(0,0,0,${theme.iD}), 0 20px 40px rgba(0,0,0,${theme.iD * 1.8}), 0 40px 80px rgba(0,0,0,${theme.iD * 1.5}), ${theme.cardGlow}`
-          : `0 2px 4px rgba(0,0,0,${theme.iD}), 0 8px 18px rgba(0,0,0,${theme.iD * 1.3}), 0 24px 48px rgba(0,0,0,${theme.iD * 1.1})`,
-        transition:
-          "transform 0.5s cubic-bezier(0.34,1.56,0.64,1), opacity 0.7s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.4s, border-color 0.4s",
-        willChange: "transform",
-      }}
-    >
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: "50%",
-          background: `linear-gradient(to bottom,rgba(255,255,255,${theme.iL * 0.65}),transparent)`,
-          borderRadius: `${compact ? 22 : 24}px ${compact ? 22 : 24}px 50% 50%`,
-          pointerEvents: "none",
-        }}
-      />
-
-      {active && (
-        <div
-          style={{
-            position: "absolute",
-            inset: -1,
-            borderRadius: compact ? 23 : 25,
-            background: theme.grad,
-            opacity: 0.15,
-            filter: "blur(8px)",
-            animation: "pulseGlow 2s ease-in-out infinite",
-            pointerEvents: "none",
-          }}
-        />
-      )}
-
-      <div style={{ display: "flex", gap: 6, marginBottom: 18, position: "relative" }}>
-        {service.svg.map((name, logoIndex) => (
-          <div
-            key={name}
-            style={{
-              width: compact ? 36 : 40,
-              height: compact ? 36 : 40,
-              borderRadius: 12,
-              background: "rgba(0,0,0,0.03)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              transform: active ? `translateY(-${3 + logoIndex * 2}px) rotate(${logoIndex % 2 === 0 ? -3 : 3}deg)` : "none",
-              transition: `transform 0.5s cubic-bezier(0.34,1.56,0.64,1) ${logoIndex * 0.06}s`,
-            }}
-          >
-            <LogoSVG name={name} size={compact ? 18 : 20} />
-          </div>
-        ))}
+    <div style={{ display: "flex", alignItems: "center", gap: 10, padding: compact ? "8px 12px 8px 8px" : "10px 14px 10px 10px", borderRadius: 16, background: theme.bg, border: `1px solid ${theme.cardBorder}` }}>
+      <div style={{ width: compact ? 32 : 36, height: compact ? 32 : 36, borderRadius: 11, background: theme.card, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
+        {hasLogo ? (
+          <LogoSVG name={name} size={20} />
+        ) : (
+          <Icon name="brackets-curly" size={18} color={theme.a1} />
+        )}
       </div>
+      <span style={{ fontFamily: typography.head, fontWeight: 700, fontSize: compact ? "0.84rem" : "0.9rem", color: theme.text, letterSpacing: "-0.01em", whiteSpace: "nowrap" }}>
+        {TOOL_LABELS[name] || name}
+      </span>
+    </div>
+  );
+};
 
-      <h3
-        style={{
-          fontFamily: typography.head,
-          fontSize: compact ? "1.1rem" : "1.25rem",
-          fontWeight: 700,
-          marginBottom: 8,
-          color: theme.text,
-          letterSpacing: "-0.02em",
-          position: "relative",
-        }}
-      >
+const ServiceDetail = ({ service, index, theme, typography, compact, upworkUrl }) => (
+  <div key={service.title} className="svc-detail-in">
+    {!compact && (
+      <div style={{ fontFamily: typography.mono, fontSize: "0.72rem", fontWeight: 600, letterSpacing: "0.12em", color: theme.tagC, marginBottom: 18 }}>
+        SYSTEM {String(index + 1).padStart(2, "0")} / {String(services.length).padStart(2, "0")}
+      </div>
+    )}
+    {!compact && (
+      <h3 style={{ fontFamily: typography.head, fontSize: "clamp(1.8rem, 2.6vw, 2.3rem)", fontWeight: 800, lineHeight: 1.1, letterSpacing: "-0.03em", color: theme.text, marginBottom: 16 }}>
         {service.title}
       </h3>
-      <p
-        style={{
-          fontSize: compact ? "0.85rem" : "0.88rem",
-          color: theme.text2,
-          lineHeight: 1.65,
-          marginBottom: 16,
-          position: "relative",
-        }}
-      >
-        {service.description}
-      </p>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, position: "relative" }}>
-        {service.tags.map((tag) => (
-          <span
-            key={tag}
-            style={{
-              fontFamily: typography.mono,
-              fontSize: "0.6rem",
-              fontWeight: 500,
-              padding: "4px 10px",
-              borderRadius: 999,
-              background: theme.tagBg,
-              color: theme.tagC,
-            }}
-          >
-            {tag}
-          </span>
-        ))}
+    )}
+    <p style={{ fontSize: compact ? "0.95rem" : "1.08rem", color: theme.text2, lineHeight: 1.72, marginBottom: compact ? 18 : 28, maxWidth: 560 }}>
+      {service.description}
+    </p>
+    <div style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: theme.text3, marginBottom: 12 }}>
+      Typical stack
+    </div>
+    <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+      {serviceStack(service).map((name) => (
+        <ToolTile key={name} name={name} theme={theme} typography={typography} compact={compact} />
+      ))}
+    </div>
+    {!compact && (
+      <a href={upworkUrl} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 8, marginTop: 32, padding: "13px 24px", borderRadius: 999, background: theme.grad, color: "#fff", fontWeight: 700, fontSize: "0.92rem", textDecoration: "none", boxShadow: theme.btnGlow }}>
+        Discuss this system <Icon name="arrow-right" size={16} />
+      </a>
+    )}
+  </div>
+);
+
+const prefersReducedMotion = () =>
+  typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
+const ServicesExplorer = ({ theme, clay, typography, isMobile, isTablet, upworkUrl }) => {
+  const [active, setActive] = useState(0);
+  const [openSet, setOpenSet] = useState(() => new Set([0]));
+  // Desktop scroll-sync: the explorer pins while the page scrolls one step per service.
+  const [pin, setPin] = useState(null); // { step, top, height } when the viewport is tall enough to pin
+  const stacked = isMobile || isTablet;
+  const listRefs = useRef([]);
+  const itemRefs = useRef([]);
+  const trackRef = useRef(null);
+  const stickyRef = useRef(null);
+
+  // Decide whether the pinned layout fits this viewport, and how far to scroll per service.
+  useEffect(() => {
+    if (stacked) return undefined;
+    const measure = () => {
+      const height = stickyRef.current?.offsetHeight || 0;
+      const vh = window.innerHeight;
+      setPin(height && vh >= height + 96 ? { step: Math.round(vh * 0.38), top: Math.max(24, Math.round((vh - height) / 2)), height } : null);
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [stacked]);
+
+  // While pinned, the scroll position picks the active service.
+  useEffect(() => {
+    if (stacked || !pin) return undefined;
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const track = trackRef.current;
+      if (!track) return;
+      const travelled = pin.top - track.getBoundingClientRect().top;
+      // Split the pinned scroll distance into equal zones, one per service.
+      const zone = ((services.length - 1) * pin.step) / services.length;
+      const index = Math.min(services.length - 1, Math.max(0, Math.floor(travelled / zone)));
+      setActive(index);
+    };
+    const onScroll = () => { if (!frame) frame = requestAnimationFrame(update); };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => { window.removeEventListener("scroll", onScroll); if (frame) cancelAnimationFrame(frame); };
+  }, [stacked, pin]);
+
+  // Phone/tablet: open each service as it scrolls into the upper part of the screen.
+  // Items only ever open on scroll (never auto-close), so nothing above the reader shifts.
+  useEffect(() => {
+    if (!stacked || typeof IntersectionObserver === "undefined") return undefined;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const shown = entries.filter((e) => e.isIntersecting).map((e) => Number(e.target.dataset.index));
+        if (shown.length) setOpenSet((prev) => (shown.every((i) => prev.has(i)) ? prev : new Set([...prev, ...shown])));
+      },
+      { rootMargin: "0px 0px -35% 0px" }
+    );
+    itemRefs.current.forEach((el) => el && observer.observe(el));
+    return () => observer.disconnect();
+  }, [stacked]);
+
+  const select = (index) => {
+    setActive(index);
+    if (!pin || !trackRef.current) return;
+    // Keep scroll and selection in sync: jump to the scroll step for this service.
+    const trackTop = trackRef.current.getBoundingClientRect().top + window.scrollY - pin.top;
+    const zone = ((services.length - 1) * pin.step) / services.length;
+    window.scrollTo({ top: trackTop + Math.round((index + 0.5) * zone), behavior: prefersReducedMotion() ? "auto" : "smooth" });
+  };
+
+  // Arrow keys move between services, like a tab list.
+  const onKeyDown = (event, index) => {
+    const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[event.key];
+    if (!step) return;
+    event.preventDefault();
+    const next = (index + step + services.length) % services.length;
+    select(next);
+    listRefs.current[next]?.focus({ preventScroll: true });
+  };
+
+  const styles = (
+    <style>{`
+      .svc-detail-in { animation: svcIn 0.42s cubic-bezier(0.16,1,0.3,1) both; }
+      @keyframes svcIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+      .svc-item:focus-visible { outline: 2px solid ${theme.a1}; outline-offset: 2px; }
+      @media (prefers-reduced-motion: reduce) { .svc-detail-in { animation: none; } }
+    `}</style>
+  );
+
+  if (stacked) {
+    return (
+      <div style={{ display: "grid", gap: 10 }}>
+        {styles}
+        {services.map((service, index) => {
+          const open = openSet.has(index);
+          const toggle = () =>
+            setOpenSet((prev) => {
+              const next = new Set(prev);
+              if (next.has(index)) next.delete(index);
+              else next.add(index);
+              return next;
+            });
+          return (
+            <div key={service.title} ref={(el) => { itemRefs.current[index] = el; }} data-index={index} style={{ background: theme.card, border: `1px solid ${open ? theme.hoverBorder : theme.cardBorder}`, borderRadius: 22, boxShadow: open ? clay(theme.cardGlow) : "none", transition: "border-color 0.25s, box-shadow 0.25s" }}>
+              <button
+                type="button"
+                className="svc-item"
+                aria-expanded={open}
+                aria-controls={`svc-panel-${index}`}
+                onClick={toggle}
+                style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, padding: isMobile ? "16px 16px" : "18px 22px", background: "transparent", border: "none", cursor: "pointer", textAlign: "left", fontFamily: "inherit", borderRadius: 22 }}
+              >
+                <span style={{ fontFamily: typography.mono, fontSize: "0.78rem", fontWeight: 600, color: open ? theme.a1 : theme.text3, width: 22, flexShrink: 0 }}>
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span style={{ flex: 1, fontFamily: typography.head, fontWeight: 700, fontSize: isMobile ? "1.02rem" : "1.1rem", color: theme.text, letterSpacing: "-0.02em" }}>
+                  {service.title}
+                </span>
+                <Icon name="chevron-down" size={20} color={open ? theme.a1 : theme.text3} style={{ transform: open ? "rotate(180deg)" : "none", transition: "transform 0.25s" }} />
+              </button>
+              {open && (
+                <div id={`svc-panel-${index}`} style={{ padding: isMobile ? "0 16px 18px 52px" : "0 22px 22px 58px" }}>
+                  <ServiceDetail service={service} index={index} theme={theme} typography={typography} compact upworkUrl={upworkUrl} />
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  const current = services[active];
+  return (
+    <div ref={trackRef} style={{ height: pin ? pin.height + (services.length - 1) * pin.step : "auto" }}>
+      {styles}
+      <div ref={stickyRef} style={{ position: pin ? "sticky" : "static", top: pin ? pin.top : undefined, display: "grid", gridTemplateColumns: "minmax(0, 5fr) minmax(0, 7fr)", gap: 28, alignItems: "stretch" }}>
+        <div role="tablist" aria-orientation="vertical" aria-label="Services" style={{ display: "grid", gap: 6, position: "relative" }}>
+          {services.map((service, index) => {
+            const selected = active === index;
+            return (
+              <button
+                key={service.title}
+                ref={(el) => { listRefs.current[index] = el; }}
+                type="button"
+                role="tab"
+                id={`svc-tab-${index}`}
+                aria-selected={selected}
+                aria-controls="svc-panel"
+                tabIndex={selected ? 0 : -1}
+                className="svc-item"
+                onClick={() => select(index)}
+                onKeyDown={(event) => onKeyDown(event, index)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 16,
+                  padding: "21px 18px",
+                  borderRadius: 20,
+                  border: `1px solid ${selected ? theme.hoverBorder : "transparent"}`,
+                  background: selected ? theme.card : "transparent",
+                  boxShadow: selected ? clay(theme.cardGlow) : "none",
+                  cursor: "pointer",
+                  textAlign: "left",
+                  fontFamily: "inherit",
+                  transition: "background 0.25s, box-shadow 0.25s, border-color 0.25s",
+                }}
+              >
+                <span style={{ fontFamily: typography.mono, fontSize: "0.8rem", fontWeight: 600, color: selected ? theme.a1 : theme.text3, width: 24, flexShrink: 0 }}>
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span style={{ flex: 1, fontFamily: typography.head, fontWeight: 700, fontSize: "1.08rem", color: selected ? theme.text : theme.text2, letterSpacing: "-0.02em" }}>
+                  {service.title}
+                </span>
+                <span style={{ display: "flex", gap: 4, opacity: selected ? 1 : 0.55, transition: "opacity 0.25s" }}>
+                  {service.svg.map((name) => (
+                    <span key={name} style={{ width: 26, height: 26, borderRadius: 8, background: theme.bg, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <LogoSVG name={name} size={16} />
+                    </span>
+                  ))}
+                </span>
+                <Icon name="arrow-right" size={18} color={selected ? theme.a1 : "transparent"} style={{ transition: "color 0.25s" }} />
+              </button>
+            );
+          })}
+        </div>
+
+        <div
+          role="tabpanel"
+          id="svc-panel"
+          aria-labelledby={`svc-tab-${active}`}
+          style={{ position: "relative", background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 32, padding: "40px 40px 38px", boxShadow: clay(theme.cardGlow), overflow: "hidden", display: "flex", flexDirection: "column" }}
+        >
+          <div aria-hidden="true" style={{ position: "absolute", top: -120, right: -120, width: 320, height: 320, borderRadius: "50%", background: `radial-gradient(circle, ${theme.glow1}, transparent 70%)`, pointerEvents: "none" }} />
+          <div style={{ position: "relative", flex: 1 }}>
+            <ServiceDetail service={current} index={active} theme={theme} typography={typography} upworkUrl={upworkUrl} />
+          </div>
+          {pin && (
+            <div aria-hidden="true" style={{ position: "relative", display: "flex", gap: 6, marginTop: 24 }}>
+              {services.map((service, index) => (
+                <span key={service.title} style={{ flex: 1, height: 4, borderRadius: 999, background: index <= active ? theme.grad : theme.chipBg, transition: "background 0.3s" }} />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -833,9 +906,9 @@ export default function BelowFoldSections({ theme, isMobile, isTablet, clay, typ
               {["CRM architecture", "Lifecycle email & SMS automation", "Lead routing & segmentation", "APIs & webhooks", "Workflow integrations", "Attribution & reporting", "Automation QA", "n8n", "Zapier"].map((skill) => <span key={skill} style={{ padding: "8px 11px", borderRadius: 999, background: theme.tagBg, color: theme.tagC, fontSize: "0.82rem", fontWeight: 650 }}>{skill}</span>)}
             </div>
             <p style={{ color: theme.text2, lineHeight: 1.7, margin: "0 0 18px" }}>Recruiters can review the selected work below or contact me directly. Consultancy clients can continue to use the established Upwork route.</p>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-              <a href="mailto:hello@automationpaths.com?subject=Full-time%20role%20in%20Europe" style={{ padding: "12px 18px", borderRadius: 999, background: theme.grad, color: "#fff", textDecoration: "none", fontWeight: 700 }}>Email about a full-time role</a>
-              <a href={upworkUrl} target="_blank" rel="noreferrer" style={{ padding: "12px 18px", borderRadius: 999, background: theme.card, color: theme.text, border: `1px solid ${theme.cardBorder}`, textDecoration: "none", fontWeight: 700 }}>View Upwork profile</a>
+            <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", flexWrap: "wrap", gap: 10 }}>
+              <a href="mailto:riaz@automationpaths.com?subject=Full-time%20role%20in%20Europe" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: isMobile ? "100%" : "auto", minHeight: 48, whiteSpace: "nowrap", padding: "12px 18px", borderRadius: 999, background: theme.grad, color: "#fff", textDecoration: "none", fontWeight: 700 }}>Email about a full-time role</a>
+              <a href={upworkUrl} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: isMobile ? "100%" : "auto", minHeight: 48, whiteSpace: "nowrap", padding: "12px 18px", borderRadius: 999, background: theme.card, color: theme.text, border: `1px solid ${theme.cardBorder}`, textDecoration: "none", fontWeight: 700 }}>View Upwork profile</a>
             </div>
           </div>
         </div>
@@ -855,11 +928,7 @@ export default function BelowFoldSections({ theme, isMobile, isTablet, clay, typ
           </div>
           </SectionReveal>
 
-          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
-            {services.map((service, index) => (
-              <ServiceCard key={service.title} service={service} index={index} theme={theme} compact={isMobile} clay={clay} typography={typography} />
-            ))}
-          </div>
+          <ServicesExplorer theme={theme} clay={clay} typography={typography} isMobile={isMobile} isTablet={isTablet} upworkUrl={upworkUrl} />
         </div>
       </section>
 
@@ -1053,7 +1122,7 @@ export default function BelowFoldSections({ theme, isMobile, isTablet, clay, typ
             For consultancy work, share the workflow or CRM challenge. For a full-time role, tell me about the team, scope, location, and relocation process.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", flexDirection: isMobile ? "column" : "row" }}>
-            <a href="mailto:hello@automationpaths.com" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "15px 28px", width: isMobile ? "100%" : "auto", background: theme.grad, color: "#fff", borderRadius: 999, fontWeight: 700, fontSize: "0.95rem", textDecoration: "none", boxShadow: `${theme.btnGlow}, inset 0 2px 6px rgba(255,255,255,0.25)` }}>Email Riazul</a>
+            <a href="mailto:riaz@automationpaths.com" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "15px 28px", width: isMobile ? "100%" : "auto", background: theme.grad, color: "#fff", borderRadius: 999, fontWeight: 700, fontSize: "0.95rem", textDecoration: "none", boxShadow: `${theme.btnGlow}, inset 0 2px 6px rgba(255,255,255,0.25)` }}>Email Riazul</a>
             <a href={upworkUrl} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "15px 24px", width: isMobile ? "100%" : "auto", background: theme.card, color: theme.text, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, fontWeight: 700, textDecoration: "none" }}>Upwork profile</a>
           </div>
         </div>
