@@ -2,6 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { useTheme } from "../../hooks/useTheme";
 import { buttonStyle, panelStyle } from "./ui";
+import Icon from "../../icons/Icon.jsx";
 
 const navItems = [
   { to: "/admin", label: "Dashboard" },
@@ -47,7 +48,7 @@ export default function AdminSidebar({ collapsed, onToggle, user, onLogout, stac
             <div style={{ fontFamily: "Fraunces, serif", color: theme.text, fontSize: "1.5rem" }}>AP</div>
           )}
           <button type="button" onClick={onToggle} style={buttonStyle(theme, "ghost", { padding: "10px 12px" })}>
-            {collapsed ? "→" : "←"}
+            <Icon name={collapsed ? "arrow-right" : "arrow-left"} size={16} />
           </button>
         </div>
         <nav style={{ display: "grid", gap: 8 }}>
@@ -82,7 +83,7 @@ export default function AdminSidebar({ collapsed, onToggle, user, onLogout, stac
           </div>
         ) : null}
         <button type="button" onClick={onLogout} style={buttonStyle(theme, "default")}>
-          {collapsed ? "⎋" : "Logout"}
+          {collapsed ? <Icon name="arrow-sign-out-1" size={18} title="Logout" /> : "Logout"}
         </button>
       </div>
     </aside>

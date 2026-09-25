@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import SEOHead from "../SEOHead.jsx";
+import Icon from "../icons/Icon.jsx";
 import { TYPOGRAPHY, useSessionTheme } from "../quiz/theme.js";
 import { BlogNav, BlogFooter } from "./BlogChrome.jsx";
 import { getPost, trackView } from "./blogApi.js";
@@ -70,7 +71,7 @@ export default function BlogPost() {
           <p style={{ color: theme.text2, marginBottom: 20 }}>
             {status === "notfound" ? "This post may have been moved or unpublished." : errorMsg}
           </p>
-          <Link to="/blog" style={{ color: theme.chipC, fontWeight: 700, textDecoration: "none" }}>← Back to the blog</Link>
+          <Link to="/blog" style={{ color: theme.chipC, fontWeight: 700, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}><Icon name="arrow-left" size={16} /> Back to the blog</Link>
         </div>
         <BlogFooter theme={theme} />
       </div>
@@ -199,9 +200,9 @@ export default function BlogPost() {
           </p>
           <a
             href="/funnel-quiz"
-            style={{ display: "inline-block", background: theme.grad, color: "#fff", fontWeight: 700, padding: "12px 26px", borderRadius: 999, textDecoration: "none", boxShadow: theme.btnGlow }}
+            style={{ display: "inline-flex", alignItems: "center", gap: 6, background: theme.grad, color: "#fff", fontWeight: 700, padding: "12px 26px", borderRadius: 999, textDecoration: "none", boxShadow: theme.btnGlow }}
           >
-            Take the free funnel audit →
+            Take the free funnel audit <Icon name="arrow-right" size={16} />
           </a>
         </div>
       </article>

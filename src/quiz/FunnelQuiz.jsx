@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import SEOHead from "../SEOHead.jsx";
+import Icon from "../icons/Icon.jsx";
 import automationPathsBrandLogo from "../../Automation Paths Logo (3).png";
 import { TYPOGRAPHY, useSessionTheme, makeClay } from "./theme.js";
 import {
@@ -409,7 +410,7 @@ function TopBar({ theme, clay, isMobile }) {
             whiteSpace: "nowrap",
           }}
         >
-          Hire on Upwork →
+          Hire on Upwork <Icon name="arrow-right" size={16} />
         </a>
       </div>
     </nav>
@@ -513,7 +514,7 @@ function IntroScreen({ theme, clay, isMobile, onStart }) {
                 marginTop: 1,
               }}
             >
-              ✓
+              <Icon name="check" size={14} />
             </span>
             <span style={{ fontSize: isMobile ? "0.9rem" : "0.96rem", color: theme.text, lineHeight: 1.5 }}>{b}</span>
           </div>
@@ -540,7 +541,7 @@ function IntroScreen({ theme, clay, isMobile, onStart }) {
           boxShadow: `${theme.btnGlow}, inset 0 2px 6px rgba(255,255,255,0.25)`,
         }}
       >
-        Start the diagnostic →
+        Start the diagnostic <Icon name="arrow-right" size={16} />
       </button>
       <div style={{ fontSize: "0.78rem", color: theme.text3, marginTop: 16 }}>
         6 profile questions · 27 diagnostic questions · no login required
@@ -678,7 +679,7 @@ function QuestionScreen({
                   border: selected ? "none" : `1.5px solid ${theme.cardBorder}`,
                 }}
               >
-                {selected ? (isMulti ? "✓" : marker || "✓") : marker || ""}
+                {selected ? (isMulti || !marker ? <Icon name="check" size={16} /> : marker) : marker || ""}
               </span>
               <span style={{ flex: 1 }}>{text}</span>
             </button>
@@ -703,7 +704,7 @@ function QuestionScreen({
             fontFamily: TYPOGRAPHY.body,
           }}
         >
-          ← Back
+          <Icon name="arrow-left" size={16} /> Back
         </button>
 
         {/* Multi-select needs an explicit Continue; single-select auto-advances. */}
@@ -725,7 +726,7 @@ function QuestionScreen({
               boxShadow: canContinue ? theme.btnGlow : "none",
             }}
           >
-            Continue →
+            Continue <Icon name="arrow-right" size={16} />
           </button>
         ) : (
           <span style={{ fontSize: "0.76rem", color: theme.text3 }}>Tap an answer to continue</span>
@@ -767,7 +768,7 @@ function GateScreen({ theme, clay, isMobile, lead, setLead, error, onSubmit, onB
           boxShadow: theme.btnGlow,
         }}
       >
-        📊
+        <Icon name="chart-bar-1" size={28} color="#fff" />
       </div>
       <h2 style={{ fontFamily: TYPOGRAPHY.head, fontWeight: 800, fontSize: isMobile ? "1.6rem" : "2rem", letterSpacing: "-0.03em", marginBottom: 10 }}>
         Your Funnel Health Score is ready
@@ -819,7 +820,7 @@ function GateScreen({ theme, clay, isMobile, lead, setLead, error, onSubmit, onB
             opacity: ready ? 1 : 0.7,
           }}
         >
-          Reveal my score →
+          Reveal my score <Icon name="arrow-right" size={16} />
         </button>
       </form>
 
@@ -839,7 +840,7 @@ function GateScreen({ theme, clay, isMobile, lead, setLead, error, onSubmit, onB
           fontFamily: TYPOGRAPHY.body,
         }}
       >
-        ← Back to questions
+        <Icon name="arrow-left" size={16} /> Back to questions
       </button>
     </section>
   );
@@ -949,7 +950,7 @@ function ResultsScreen({ theme, clay, isMobile, results, saveState, name, onRest
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
-            <span style={{ fontSize: "1.3rem" }}>⚠️</span>
+            <Icon name="exclamation-mark-triangle" size={24} color="#DC2626" />
             <h3 style={{ fontFamily: TYPOGRAPHY.head, fontWeight: 800, fontSize: isMobile ? "1.05rem" : "1.2rem", color: "#DC2626" }}>
               Revenue-critical warnings
             </h3>
@@ -1108,13 +1109,13 @@ function ResultsScreen({ theme, clay, isMobile, results, saveState, name, onRest
             boxShadow: "0 6px 24px rgba(0,0,0,0.18)",
           }}
         >
-          Book a Revenue Systems Audit →
+          Book a Revenue Systems Audit <Icon name="arrow-right" size={16} />
         </a>
       </div>
 
       <div style={{ textAlign: "center" }}>
         {saveState === "saved" && (
-          <div style={{ color: theme.text3, fontSize: "0.8rem", marginBottom: 10 }}>✓ Your results were saved.</div>
+          <div style={{ color: theme.text3, fontSize: "0.8rem", marginBottom: 10 }}><Icon name="check" size={14} /> Your results were saved.</div>
         )}
         <button
           onClick={onRestart}

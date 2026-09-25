@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import automationPathsBrandLogo from "../Automation Paths Logo (3).png";
 import abidinHeadshot from "./assets/headshots/abidin.webp";
 import CaseStudiesSection from "./CaseStudiesSection.jsx";
+import Icon from "./icons/Icon.jsx";
 import loganHeadshot from "./assets/headshots/logan.webp";
 import orianaHeadshot from "./assets/headshots/oriana.webp";
 import ralphHeadshot from "./assets/headshots/ralph.webp";
@@ -116,19 +117,19 @@ const founderBullets = [
 
 const deliveryLanes = [
   {
-    emoji: "\u{1F3AF}",
+    icon: "target-1",
     title: "Acquisition Systems",
     description: "Inbound capture, outbound workflows, enrichment, qualification logic, and the automations that move prospects into the right lane.",
     points: ["Lead capture flows", "Outbound sequencing", "Qualification scoring"],
   },
   {
-    emoji: "\u{2699}\u{FE0F}",
+    icon: "gear-1",
     title: "Execution Systems",
     description: "The backend layer that keeps sales and fulfillment moving: CRM states, AI touchpoints, handoffs, notifications, and QA rules.",
     points: ["Pipeline automations", "AI assistants", "Internal operating logic"],
   },
   {
-    emoji: "\u{1F4CA}",
+    icon: "chart-bar-1",
     title: "Visibility Systems",
     description: "Clear dashboards and reporting that tell you where revenue leaks, where teams slow down, and which systems need refinement next.",
     points: ["Reporting dashboards", "Attribution clarity", "Decision-grade metrics"],
@@ -710,21 +711,17 @@ const ReviewCard = ({ item, theme, compact, clay, typography }) => {
         <div style={{ height: 1, background: divider, marginBottom: 18 }} />
         <p style={{ color: text, fontSize: compact ? "0.96rem" : "1rem", lineHeight: 1.72 }}>{item.quote}</p>
       </div>
-      <div style={{ display: "flex", gap: compact ? 3 : 4, marginTop: 22, position: "relative", alignItems: "center" }}>
+      <div role="img" aria-label="5 out of 5 stars" style={{ display: "flex", gap: compact ? 3 : 4, marginTop: 22, position: "relative", alignItems: "center" }}>
         {[0, 1, 2, 3, 4].map((star) => (
-          <span
+          <Icon
             key={star}
+            name="star-full"
+            size={compact ? 18 : 20}
+            color="#F5A623"
             style={{
-              display: "inline-block",
-              fontSize: compact ? "1.02rem" : "1.12rem",
-              lineHeight: 1,
               filter: isDark ? "drop-shadow(0 4px 10px rgba(0,0,0,0.24))" : "drop-shadow(0 3px 8px rgba(255,140,66,0.14))",
             }}
-            role="img"
-            aria-label="star"
-          >
-            {"\u2B50"}
-          </span>
+          />
         ))}
       </div>
     </div>
@@ -868,7 +865,7 @@ export default function BelowFoldSections({ theme, isMobile, isTablet, clay, typ
           {deliveryLanes.map((lane) => (
             <div key={lane.title} style={{ background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 28, padding: isMobile ? "22px 18px" : "24px 22px", boxShadow: clay(theme.cardGlow) }}>
               <div style={{ width: 42, height: 42, borderRadius: 14, background: theme.chipBg, color: theme.a1, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.1rem", marginBottom: 16 }}>
-                {lane.emoji}
+                <Icon name={lane.icon} size={24} />
               </div>
               <h3 style={{ fontFamily: typography.head, fontSize: "1.18rem", fontWeight: 700, letterSpacing: "-0.03em", color: theme.text, marginBottom: 10 }}>
                 {lane.title}
@@ -979,7 +976,7 @@ export default function BelowFoldSections({ theme, isMobile, isTablet, clay, typ
               <SectionReveal key={item} delay={i * 60}>
                 <div style={{ background: theme.card, border: `1px solid rgba(20,168,0,0.18)`, borderRadius: 24, padding: "22px 20px", boxShadow: clay(theme.cardGlow), display: "grid", gridTemplateColumns: "28px 1fr", gap: 12, alignItems: "start" }}>
                   <div style={{ width: 28, height: 28, borderRadius: "50%", background: "rgba(20,168,0,0.1)", color: "#14A800", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.88rem", fontWeight: 700, flexShrink: 0 }}>
-                    ✓
+                    <Icon name="check" size={16} />
                   </div>
                   <p style={{ color: theme.text, lineHeight: 1.7, fontSize: "0.96rem" }}>{item}</p>
                 </div>

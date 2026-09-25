@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Plus, ExternalLink, Trash2, Pencil, FileText, BarChart3 } from "lucide-react";
+import Icon from "../../icons/Icon.jsx";
 import { TYPOGRAPHY } from "../../quiz/theme.js";
 import { apiGet, apiDelete } from "./adminApi.js";
 import PostEditor from "./PostEditor.jsx";
@@ -103,12 +103,12 @@ export default function BlogAdmin({ token, theme, isMobile, onExpired }) {
       {/* Sub-nav */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 18 }}>
         <div style={{ display: "inline-flex", gap: 4, padding: 4, background: theme.chipBg, borderRadius: 999 }}>
-          <SubTab theme={theme} active={view === "list"} onClick={() => setView("list")} icon={<FileText size={15} />}>Posts</SubTab>
-          <SubTab theme={theme} active={view === "analytics"} onClick={() => setView("analytics")} icon={<BarChart3 size={15} />}>Analytics</SubTab>
+          <SubTab theme={theme} active={view === "list"} onClick={() => setView("list")} icon={<Icon name="file-1" size={15} />}>Posts</SubTab>
+          <SubTab theme={theme} active={view === "analytics"} onClick={() => setView("analytics")} icon={<Icon name="chart-bar-1" size={15} />}>Analytics</SubTab>
         </div>
         {view === "list" && (
           <button onClick={openNew} style={{ display: "inline-flex", alignItems: "center", gap: 7, background: theme.grad, color: "#fff", border: "none", borderRadius: 999, padding: "10px 18px", fontWeight: 700, fontSize: "0.86rem", cursor: "pointer", fontFamily: TYPOGRAPHY.body, boxShadow: theme.btnGlow }}>
-            <Plus size={16} /> New post
+            <Icon name="plus" size={16} /> New post
           </button>
         )}
       </div>
@@ -178,11 +178,11 @@ export default function BlogAdmin({ token, theme, isMobile, onExpired }) {
                           <div style={{ display: "inline-flex", gap: 4 }}>
                             {p.status === "published" && (
                               <a href={`/blog/${p.slug}`} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} title="View" style={iconBtn(theme)}>
-                                <ExternalLink size={15} />
+                                <Icon name="arrow-square-out" size={15} />
                               </a>
                             )}
-                            <button onClick={() => openEdit(p.id)} title="Edit" style={iconBtn(theme)}><Pencil size={15} /></button>
-                            <button onClick={(e) => del(e, p.id)} title="Delete" style={{ ...iconBtn(theme), color: "#DC2626" }}><Trash2 size={15} /></button>
+                            <button onClick={() => openEdit(p.id)} title="Edit" style={iconBtn(theme)}><Icon name="pencil-1" size={15} /></button>
+                            <button onClick={(e) => del(e, p.id)} title="Delete" style={{ ...iconBtn(theme), color: "#DC2626" }}><Icon name="trash-2" size={15} /></button>
                           </div>
                         </td>
                       </tr>

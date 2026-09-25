@@ -1,6 +1,7 @@
 import React, { Suspense, lazy, useEffect, useState } from "react";
 import automationPathsBrandLogo from "./Automation Paths Logo (3).png";
 import SEOHead from "./src/SEOHead.jsx";
+import Icon from "./src/icons/Icon.jsx";
 import vapiLogo from "./src/assets/logos/VAPI.svg";
 import zapierLogo from "./src/assets/logos/zapier-2.svg";
 
@@ -82,17 +83,17 @@ const platformLogos = [
 
 const heroPrinciples = [
   {
-    emoji: "\u{1F50E}",
+    icon: "magnifying-glass",
     title: "Audit before adding tools",
     copy: "Find where leads die, where response time breaks, and where routing fails - before touching a single new platform.",
   },
   {
-    emoji: "\u{1F9E9}",
+    icon: "puzzle",
     title: "Rebuild around the revenue path",
     copy: "CRM, AI, outbound, and dashboards get redesigned around how leads actually move from first touch to closed revenue.",
   },
   {
-    emoji: "\u{1F680}",
+    icon: "rocket",
     title: "Ship with QA, docs, and handoff",
     copy: "Every system is tested, documented, and handed over clearly so it survives after launch - without depending on you to maintain it.",
   },
@@ -401,8 +402,8 @@ export default function App() {
                   {item.label}
                 </a>
               ))}
-            <a href={UPWORK_URL} target="_blank" rel="noreferrer" style={{ width: isMobile ? "100%" : "auto", padding: isMobile ? "12px 18px" : "8px 20px", background: theme.grad, color: "#fff", borderRadius: 999, fontWeight: 700, fontSize: "0.84rem", textDecoration: "none", boxShadow: `${theme.btnGlow}, inset 0 2px 4px rgba(255,255,255,0.3)`, textAlign: "center" }}>
-              Work with the consultancy -&gt;
+            <a href={UPWORK_URL} target="_blank" rel="noreferrer" style={{ width: isMobile ? "100%" : "auto", padding: isMobile ? "12px 18px" : "8px 20px", background: theme.grad, color: "#fff", borderRadius: 999, fontWeight: 700, fontSize: "0.84rem", textDecoration: "none", boxShadow: `${theme.btnGlow}, inset 0 2px 4px rgba(255,255,255,0.3)`, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+              Work with the consultancy <Icon name="arrow-right" size={16} />
             </a>
           </div>
         </div>
@@ -428,7 +429,7 @@ export default function App() {
 
         <div style={{ display: isMobile ? "grid" : "flex", gap: isMobile ? 10 : 12, gridTemplateColumns: isMobile ? "repeat(2, minmax(0, 1fr))" : undefined, flexWrap: isMobile ? undefined : "wrap", width: isMobile ? "100%" : "auto", maxWidth: isMobile ? 340 : "none", justifyContent: "center", position: "relative", zIndex: 2, animation: "heroFadeUp 0.72s ease-out 0.44s both" }}>
           <a href={UPWORK_URL} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: isMobile ? "13px 14px" : "15px 30px", width: isMobile ? "100%" : "auto", background: theme.grad, color: "#fff", borderRadius: 999, fontWeight: 700, fontSize: isMobile ? "0.86rem" : "0.95rem", textDecoration: "none", boxShadow: `${theme.btnGlow}, inset 0 2px 6px rgba(255,255,255,0.25)` }}>
-            Discuss a consultancy project -&gt;
+            Discuss a consultancy project <Icon name="arrow-right" size={16} />
           </a>
           <a href="/#experience" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: isMobile ? "13px 14px" : "15px 26px", width: isMobile ? "100%" : "auto", background: theme.card, color: theme.text, borderRadius: 999, fontWeight: 600, fontSize: isMobile ? "0.86rem" : "0.95rem", textDecoration: "none", boxShadow: clay(), border: `1px solid ${theme.cardBorder}` }}>
             View professional experience
@@ -436,14 +437,14 @@ export default function App() {
         </div>
 
         <a href="/funnel-quiz" style={{ display: "inline-flex", alignItems: "center", gap: 8, marginTop: isMobile ? 14 : 20, padding: isMobile ? "8px 16px" : "9px 20px", background: theme.chipBg, color: theme.chipC, borderRadius: 999, fontWeight: 700, fontSize: isMobile ? "0.8rem" : "0.88rem", textDecoration: "none", position: "relative", zIndex: 2, animation: "heroFadeUp 0.72s ease-out 0.5s both" }}>
-          <span aria-hidden="true">🩺</span> Take the free Funnel Health Quiz — 6 min -&gt;
+          <Icon name="stethoscope" size={18} /> Take the free Funnel Health Quiz — 6 min <Icon name="arrow-right" size={16} />
         </a>
 
         <div className="hero-scroll" style={{ width: "100%", maxWidth: 1140, marginTop: isMobile ? 14 : 34, display: isMobile ? "flex" : "grid", gridTemplateColumns: isMobile ? undefined : "repeat(3, minmax(0, 1fr))", gap: isMobile ? 10 : 14, position: "relative", zIndex: 2, overflowX: isMobile ? "auto" : "visible", paddingBottom: isMobile ? 4 : 0, scrollSnapType: isMobile ? "x mandatory" : "none", animation: "heroFadeUp 0.76s ease-out 0.56s both" }}>
           {heroPrinciples.map((item, index) => (
             <div key={item.title} style={{ background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 24, padding: isMobile ? "14px 14px 12px" : "22px 22px", boxShadow: clay(theme.cardGlow), textAlign: "left", minWidth: isMobile ? "76vw" : "auto", maxWidth: isMobile ? 286 : "none", scrollSnapAlign: isMobile ? "start" : "none", flexShrink: 0, animation: `heroFadeUp 0.76s ease-out ${0.56 + index * 0.12}s both, cardFloat ${7 + index}s ease-in-out ${1 + index * 0.35}s infinite`, willChange: "transform" }}>
               <div style={{ width: isMobile ? 38 : 42, height: isMobile ? 38 : 42, borderRadius: 14, background: theme.chipBg, color: theme.a1, display: "flex", alignItems: "center", justifyContent: "center", fontSize: isMobile ? "1rem" : "1.1rem", marginBottom: isMobile ? 8 : 14 }}>
-                {item.emoji}
+                <Icon name={item.icon} size={isMobile ? 22 : 24} />
               </div>
               <div style={{ fontFamily: TYPOGRAPHY.head, fontSize: isMobile ? "0.92rem" : "1.06rem", fontWeight: 700, color: theme.text, marginBottom: 6, letterSpacing: "-0.03em" }}>{item.title}</div>
               <div style={{ color: theme.text2, fontSize: isMobile ? "0.8rem" : "0.88rem", lineHeight: isMobile ? 1.48 : 1.68, display: "-webkit-box", WebkitLineClamp: isMobile ? 3 : "unset", WebkitBoxOrient: "vertical", overflow: isMobile ? "hidden" : "visible" }}>{item.copy}</div>

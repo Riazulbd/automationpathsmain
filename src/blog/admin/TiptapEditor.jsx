@@ -20,11 +20,8 @@ import bash from "highlight.js/lib/languages/bash";
 import json from "highlight.js/lib/languages/json";
 import python from "highlight.js/lib/languages/python";
 import sql from "highlight.js/lib/languages/sql";
-import {
-  Bold, Italic, Strikethrough, Heading2, Heading3, List, ListOrdered,
-  Quote, Code, Link2, Image as ImageIcon, Youtube as YoutubeIcon, Table as TableIcon,
-  Minus, Undo2, Redo2, Loader2,
-} from "lucide-react";
+import { Strikethrough, Heading2, Heading3, ListOrdered } from "lucide-react";
+import Icon from "../../icons/Icon.jsx";
 import { apiUpload } from "./adminApi.js";
 import "../prose.css";
 import "./editor.css";
@@ -147,28 +144,28 @@ export default function TiptapEditor({ value, onChange, token, theme, onUploadEr
   return (
     <div style={{ border: `1px solid ${theme.cardBorder}`, borderRadius: 12, background: theme.card, ...vars }}>
       <div className="ap-editor-toolbar">
-        <Btn title="Bold" active={editor.isActive("bold")} onClick={() => editor.chain().focus().toggleBold().run()}><Bold size={16} /></Btn>
-        <Btn title="Italic" active={editor.isActive("italic")} onClick={() => editor.chain().focus().toggleItalic().run()}><Italic size={16} /></Btn>
+        <Btn title="Bold" active={editor.isActive("bold")} onClick={() => editor.chain().focus().toggleBold().run()}><Icon name="text-b" size={16} /></Btn>
+        <Btn title="Italic" active={editor.isActive("italic")} onClick={() => editor.chain().focus().toggleItalic().run()}><Icon name="text-i-italic" size={16} /></Btn>
         <Btn title="Strikethrough" active={editor.isActive("strike")} onClick={() => editor.chain().focus().toggleStrike().run()}><Strikethrough size={16} /></Btn>
         <span className="sep" />
         <Btn title="Heading 2" active={editor.isActive("heading", { level: 2 })} onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}><Heading2 size={16} /></Btn>
         <Btn title="Heading 3" active={editor.isActive("heading", { level: 3 })} onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}><Heading3 size={16} /></Btn>
         <span className="sep" />
-        <Btn title="Bullet list" active={editor.isActive("bulletList")} onClick={() => editor.chain().focus().toggleBulletList().run()}><List size={16} /></Btn>
+        <Btn title="Bullet list" active={editor.isActive("bulletList")} onClick={() => editor.chain().focus().toggleBulletList().run()}><Icon name="list-three-bullet" size={16} /></Btn>
         <Btn title="Numbered list" active={editor.isActive("orderedList")} onClick={() => editor.chain().focus().toggleOrderedList().run()}><ListOrdered size={16} /></Btn>
-        <Btn title="Quote" active={editor.isActive("blockquote")} onClick={() => editor.chain().focus().toggleBlockquote().run()}><Quote size={16} /></Btn>
-        <Btn title="Code block" active={editor.isActive("codeBlock")} onClick={() => editor.chain().focus().toggleCodeBlock().run()}><Code size={16} /></Btn>
+        <Btn title="Quote" active={editor.isActive("blockquote")} onClick={() => editor.chain().focus().toggleBlockquote().run()}><Icon name="quotes" size={16} /></Btn>
+        <Btn title="Code block" active={editor.isActive("codeBlock")} onClick={() => editor.chain().focus().toggleCodeBlock().run()}><Icon name="brackets-curly" size={16} /></Btn>
         <span className="sep" />
-        <Btn title="Link" active={editor.isActive("link")} onClick={addLink}><Link2 size={16} /></Btn>
+        <Btn title="Link" active={editor.isActive("link")} onClick={addLink}><Icon name="link-1" size={16} /></Btn>
         <Btn title="Insert image" onClick={() => fileInputRef.current?.click()}>
-          {uploading ? <Loader2 size={16} className="ap-spin" /> : <ImageIcon size={16} />}
+          {uploading ? <Icon name="arrow-rotate-clockwise-1" size={16} className="ap-spin" /> : <Icon name="image-1" size={16} />}
         </Btn>
-        <Btn title="Embed YouTube" onClick={addYoutube}><YoutubeIcon size={16} /></Btn>
-        <Btn title="Insert table" onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}><TableIcon size={16} /></Btn>
-        <Btn title="Divider" onClick={() => editor.chain().focus().setHorizontalRule().run()}><Minus size={16} /></Btn>
+        <Btn title="Embed YouTube" onClick={addYoutube}><Icon name="video" size={16} /></Btn>
+        <Btn title="Insert table" onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}><Icon name="table" size={16} /></Btn>
+        <Btn title="Divider" onClick={() => editor.chain().focus().setHorizontalRule().run()}><Icon name="minus" size={16} /></Btn>
         <span className="sep" />
-        <Btn title="Undo" disabled={!editor.can().undo()} onClick={() => editor.chain().focus().undo().run()}><Undo2 size={16} /></Btn>
-        <Btn title="Redo" disabled={!editor.can().redo()} onClick={() => editor.chain().focus().redo().run()}><Redo2 size={16} /></Btn>
+        <Btn title="Undo" disabled={!editor.can().undo()} onClick={() => editor.chain().focus().undo().run()}><Icon name="arrow-undo" size={16} /></Btn>
+        <Btn title="Redo" disabled={!editor.can().redo()} onClick={() => editor.chain().focus().redo().run()}><Icon name="arrow-redo" size={16} /></Btn>
       </div>
 
       <div className="ap-editor-surface ap-prose">

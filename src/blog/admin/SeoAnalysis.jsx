@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Check, AlertTriangle, X, ChevronDown, Info } from "lucide-react";
+import Icon from "../../icons/Icon.jsx";
 import { TYPOGRAPHY } from "../../quiz/theme.js";
 import { analyzeContent, scoreBand } from "./seoScore.js";
 
@@ -27,17 +27,17 @@ function Gauge({ score, color }) {
 }
 
 const STATUS_ICON = {
-  good: { Icon: Check, color: "#10B981" },
-  ok: { Icon: AlertTriangle, color: "#F59E0B" },
-  bad: { Icon: X, color: "#EF4444" },
+  good: { icon: "check", color: "#10B981" },
+  ok: { icon: "exclamation-mark-triangle", color: "#F59E0B" },
+  bad: { icon: "close-x", color: "#EF4444" },
 };
 
 function CheckRow({ check, theme }) {
-  const { Icon, color } = STATUS_ICON[check.status] || STATUS_ICON.bad;
+  const { icon, color } = STATUS_ICON[check.status] || STATUS_ICON.bad;
   return (
     <div style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "5px 0" }} title={check.tip}>
       <span style={{ flexShrink: 0, width: 17, height: 17, borderRadius: 5, background: `${color}22`, display: "flex", alignItems: "center", justifyContent: "center", marginTop: 1 }}>
-        <Icon size={11} color={color} strokeWidth={3} />
+        <Icon name={icon} size={13} color={color} />
       </span>
       <span style={{ fontSize: "0.8rem", color: theme.text2, lineHeight: 1.4 }}>{check.label}</span>
     </div>
@@ -66,7 +66,7 @@ function CategoryRow({ cat, theme, open, onToggle, first }) {
               onMouseLeave={() => setShowInfo(false)}
               style={{ position: "relative", display: "inline-flex", cursor: "help" }}
             >
-              <Info size={13} color={theme.text3} />
+              <Icon name="info-circle" size={13} color={theme.text3} />
               {showInfo && (
                 <span style={{ position: "absolute", bottom: "150%", left: 0, width: 230, background: theme.text, color: theme.bg, fontSize: "0.72rem", lineHeight: 1.45, fontWeight: 500, padding: "9px 11px", borderRadius: 9, zIndex: 30, boxShadow: "0 8px 24px rgba(0,0,0,0.25)" }}>
                   {cat.info}
@@ -76,7 +76,7 @@ function CategoryRow({ cat, theme, open, onToggle, first }) {
           </div>
           <div style={{ fontSize: "0.8rem", color: theme.text2, lineHeight: 1.4, marginTop: 3 }}>{cat.description}</div>
         </div>
-        <ChevronDown size={18} color={theme.text3} style={{ flexShrink: 0, transform: open ? "rotate(180deg)" : "none", transition: "transform 0.2s" }} />
+        <Icon name="chevron-down" size={18} color={theme.text3} style={{ flexShrink: 0, transform: open ? "rotate(180deg)" : "none", transition: "transform 0.2s" }} />
       </div>
 
       {open && (

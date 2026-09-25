@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Sparkles, Upload, ExternalLink, Trash2, ArrowLeft, Loader2, ChevronDown, Check, AlertCircle } from "lucide-react";
+import Icon from "../../icons/Icon.jsx";
 import { TYPOGRAPHY } from "../../quiz/theme.js";
 import TiptapEditor from "./TiptapEditor.jsx";
 import SeoAnalysis from "./SeoAnalysis.jsx";
@@ -360,22 +360,22 @@ export default function PostEditor({ token, theme, isMobile, postId, categories,
       {/* Top bar */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10, marginBottom: 16 }}>
         <button onClick={onBack} style={{ ...sideBtn(theme.chipBg, theme.text2), background: "transparent", paddingLeft: 0 }}>
-          <ArrowLeft size={16} /> Back to posts
+          <Icon name="arrow-left" size={16} /> Back to posts
         </button>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           <button onClick={aiDraft} disabled={Boolean(aiBusy)} style={sideBtn(theme.chipBg, theme.chipC, { opacity: aiBusy ? 0.55 : 1, cursor: aiBusy ? "not-allowed" : "pointer" })}>
-            {aiBusy === "draft" ? <><Loader2 size={15} className="ap-spin" /> Drafting…</> : <><Sparkles size={15} /> Draft with AI</>}
+            {aiBusy === "draft" ? <><Icon name="arrow-rotate-clockwise-1" size={15} className="ap-spin" /> Drafting…</> : <><Icon name="sparkle-1" size={15} /> Draft with AI</>}
           </button>
           {postId && (
             <button onClick={remove} style={sideBtn("rgba(239,68,68,0.1)", "#DC2626")}>
-              <Trash2 size={15} /> Delete
+              <Icon name="trash-2" size={15} /> Delete
             </button>
           )}
           <button onClick={() => save("draft")} disabled={saving} style={sideBtn(theme.card, theme.text2, { border: `1px solid ${theme.cardBorder}` })}>
             Save draft
           </button>
           <button onClick={() => save(form.status === "scheduled" ? "scheduled" : "published")} disabled={saving} style={sideBtn(theme.grad, "#fff", { boxShadow: theme.btnGlow })}>
-            {saving ? <Loader2 size={15} className="ap-spin" /> : null}
+            {saving ? <Icon name="arrow-rotate-clockwise-1" size={15} className="ap-spin" /> : null}
             {form.status === "scheduled" ? "Schedule" : "Publish"}
           </button>
         </div>
@@ -403,14 +403,14 @@ export default function PostEditor({ token, theme, isMobile, postId, categories,
             />
             {form.status === "published" && form.slug && (
               <a href={`/blog/${form.slug}`} target="_blank" rel="noreferrer" style={{ color: theme.chipC, display: "inline-flex", alignItems: "center", gap: 4, textDecoration: "none", fontWeight: 700 }}>
-                View <ExternalLink size={13} />
+                View <Icon name="arrow-square-out" size={13} />
               </a>
             )}
           </div>
 
           <div style={{ display: "flex", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
             <button onClick={aiImprove} disabled={Boolean(aiBusy)} style={sideBtn(theme.chipBg, theme.chipC, { fontSize: "0.8rem", padding: "8px 12px", opacity: aiBusy ? 0.55 : 1, cursor: aiBusy ? "not-allowed" : "pointer" })}>
-              {aiBusy === "improve" ? <><Loader2 size={14} className="ap-spin" /> Improving…</> : <><Sparkles size={14} /> Improve content</>}
+              {aiBusy === "improve" ? <><Icon name="arrow-rotate-clockwise-1" size={14} className="ap-spin" /> Improving…</> : <><Icon name="sparkle-1" size={14} /> Improve content</>}
             </button>
           </div>
 
@@ -470,13 +470,13 @@ export default function PostEditor({ token, theme, isMobile, postId, categories,
               <div style={{ marginBottom: 10 }}>
                 <img src={form.featured_image} alt={form.featured_image_alt} style={{ width: "100%", borderRadius: 10, display: "block" }} />
                 <button onClick={() => set({ featured_image: "" })} style={{ ...sideBtn("transparent", "#DC2626", { fontSize: "0.78rem", padding: "6px 0" }) }}>
-                  <Trash2 size={13} /> Remove
+                  <Icon name="trash-2" size={13} /> Remove
                 </button>
               </div>
             ) : (
               <button onClick={() => featuredInputRef.current?.click()} disabled={uploadingFeatured}
                 style={{ ...sideBtn(theme.chipBg, theme.chipC), width: "100%", padding: "20px 0", flexDirection: "column", gap: 6 }}>
-                {uploadingFeatured ? <Loader2 size={18} className="ap-spin" /> : <Upload size={18} />}
+                {uploadingFeatured ? <Icon name="arrow-rotate-clockwise-1" size={18} className="ap-spin" /> : <Icon name="arrow-upload" size={18} />}
                 <span style={{ fontSize: "0.82rem" }}>{uploadingFeatured ? "Uploading…" : "Upload image"}</span>
               </button>
             )}
@@ -525,7 +525,7 @@ export default function PostEditor({ token, theme, isMobile, postId, categories,
           <div style={card}>
             <button onClick={() => setAuthorOpen((o) => !o)} style={{ display: "flex", width: "100%", justifyContent: "space-between", alignItems: "center", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
               <span style={{ ...label, marginBottom: 0 }}>Author & E-E-A-T</span>
-              <ChevronDown size={16} color={theme.text3} style={{ transform: authorOpen ? "rotate(180deg)" : "none", transition: "transform 0.2s" }} />
+              <Icon name="chevron-down" size={16} color={theme.text3} style={{ transform: authorOpen ? "rotate(180deg)" : "none", transition: "transform 0.2s" }} />
             </button>
             {authorOpen && (
               <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 12 }}>
@@ -538,7 +538,7 @@ export default function PostEditor({ token, theme, isMobile, postId, categories,
                     </div>
                   )}
                   <button onClick={() => avatarInputRef.current?.click()} disabled={uploadingAvatar} style={{ ...sideBtn(theme.chipBg, theme.chipC, { fontSize: "0.8rem", padding: "8px 12px" }) }}>
-                    {uploadingAvatar ? <Loader2 size={14} className="ap-spin" /> : <Upload size={14} />} {form.author_avatar ? "Change photo" : "Author photo"}
+                    {uploadingAvatar ? <Icon name="arrow-rotate-clockwise-1" size={14} className="ap-spin" /> : <Icon name="arrow-upload" size={14} />} {form.author_avatar ? "Change photo" : "Author photo"}
                   </button>
                   <input ref={avatarInputRef} type="file" accept="image/*" onChange={onPickAvatar} style={{ display: "none" }} />
                 </div>
@@ -566,12 +566,12 @@ export default function PostEditor({ token, theme, isMobile, postId, categories,
           <div style={card}>
             <button onClick={() => setSeoOpen((o) => !o)} style={{ display: "flex", width: "100%", justifyContent: "space-between", alignItems: "center", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
               <span style={{ ...label, marginBottom: 0 }}>SEO & structured data</span>
-              <ChevronDown size={16} color={theme.text3} style={{ transform: seoOpen ? "rotate(180deg)" : "none", transition: "transform 0.2s" }} />
+              <Icon name="chevron-down" size={16} color={theme.text3} style={{ transform: seoOpen ? "rotate(180deg)" : "none", transition: "transform 0.2s" }} />
             </button>
             {seoOpen && (
               <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 12 }}>
                 <button onClick={aiSeo} disabled={Boolean(aiBusy)} style={{ ...sideBtn(theme.chipBg, theme.chipC, { fontSize: "0.8rem", padding: "8px 12px", opacity: aiBusy ? 0.55 : 1, cursor: aiBusy ? "not-allowed" : "pointer" }) }}>
-                  {aiBusy === "seo" ? <><Loader2 size={14} className="ap-spin" /> Generating…</> : <><Sparkles size={14} /> Generate SEO with AI</>}
+                  {aiBusy === "seo" ? <><Icon name="arrow-rotate-clockwise-1" size={14} className="ap-spin" /> Generating…</> : <><Icon name="sparkle-1" size={14} /> Generate SEO with AI</>}
                 </button>
                 <Field label={`Meta title (${(form.meta_title || "").length}/60)`} theme={theme} inp={inp} labelStyle={label}
                   value={form.meta_title} onChange={(v) => set({ meta_title: v })} placeholder={form.title} />
@@ -610,7 +610,7 @@ export default function PostEditor({ token, theme, isMobile, postId, categories,
             animation: "apToastIn 0.22s ease-out",
           }}
         >
-          {aiToast.status === "loading" ? <Loader2 size={17} className="ap-spin" /> : aiToast.status === "done" ? <Check size={17} /> : <AlertCircle size={17} />}
+          {aiToast.status === "loading" ? <Icon name="arrow-rotate-clockwise-1" size={17} className="ap-spin" /> : aiToast.status === "done" ? <Icon name="check" size={17} /> : <Icon name="exclamation-mark-circle" size={17} />}
           <span>{aiToast.text}</span>
         </div>
       )}

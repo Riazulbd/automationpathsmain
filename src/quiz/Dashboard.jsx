@@ -1,5 +1,6 @@
 import React, { Suspense, lazy, useCallback, useEffect, useMemo, useState } from "react";
 import SEOHead from "../SEOHead.jsx";
+import Icon from "../icons/Icon.jsx";
 import automationPathsBrandLogo from "../../Automation Paths Logo (3).png";
 import { TYPOGRAPHY, useSessionTheme, makeClay } from "./theme.js";
 import { PROFILE_QUESTIONS, DIAGNOSTIC_QUESTIONS, CATEGORIES } from "./quizData.js";
@@ -217,8 +218,8 @@ function Header({ theme, isMobile, submissions, onRefresh, onLogout, onExport })
         </div>
       </div>
       <div style={{ display: "flex", gap: 8 }}>
-        <button onClick={onRefresh} className="qd-btn" style={btnGhost(theme)}>↻ Refresh</button>
-        {onExport && <button onClick={onExport} className="qd-btn" style={btnGhost(theme)} disabled={!submissions?.length}>⬇ CSV</button>}
+        <button onClick={onRefresh} className="qd-btn" style={btnGhost(theme)}><Icon name="arrow-rotate-clockwise-1" size={16} /> Refresh</button>
+        {onExport && <button onClick={onExport} className="qd-btn" style={btnGhost(theme)} disabled={!submissions?.length}><Icon name="arrow-download" size={16} /> CSV</button>}
         <button onClick={onLogout} className="qd-btn" style={btnGhost(theme)}>Log out</button>
       </div>
     </div>
@@ -415,7 +416,7 @@ function Submissions({ theme, clay, isMobile, submissions, loading, onOpen }) {
                     <td style={td}><span style={{ color: LEVEL_COLOR[r.result_level] || theme.text, fontWeight: 600, fontSize: "0.82rem" }}>{r.result_level}</span></td>
                     <td style={{ ...td, color: theme.text2, fontSize: "0.82rem" }}>{topLeak ? `${topLeak.name} (${topLeak.levelShort})` : "—"}</td>
                     <td style={td}>{nCrit > 0 ? <span style={{ background: "rgba(239,68,68,0.14)", color: "#DC2626", borderRadius: 999, padding: "2px 9px", fontWeight: 800, fontSize: "0.74rem" }}>{nCrit}</span> : <span style={{ color: theme.text3 }}>0</span>}</td>
-                    <td style={{ ...td, color: theme.a1, fontWeight: 700, whiteSpace: "nowrap" }}>View →</td>
+                    <td style={{ ...td, color: theme.a1, fontWeight: 700, whiteSpace: "nowrap" }}>View <Icon name="arrow-right" size={14} /></td>
                   </tr>
                 );
               })}
@@ -434,7 +435,7 @@ function LoginScreen({ theme, clay, onLogin, error, isMobile }) {
     <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", padding: 20 }}>
       <div style={{ background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 22, boxShadow: clay(theme.cardGlow), padding: isMobile ? "28px 22px" : "38px 40px", width: "100%", maxWidth: 400, textAlign: "center" }}>
         <img src={automationPathsBrandLogo} alt="Automation Paths" style={{ height: 30, width: "auto", objectFit: "contain", marginBottom: 22 }} />
-        <div style={{ width: 50, height: 50, borderRadius: 14, background: theme.grad, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.4rem", margin: "0 auto 16px", boxShadow: theme.btnGlow }}>🔒</div>
+        <div style={{ width: 50, height: 50, borderRadius: 14, background: theme.grad, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.4rem", margin: "0 auto 16px", boxShadow: theme.btnGlow, color: "#fff" }}><Icon name="lock-1" size={26} /></div>
         <h1 style={{ fontFamily: TYPOGRAPHY.head, fontWeight: 800, fontSize: "1.4rem", marginBottom: 6 }}>Dashboard</h1>
         <p style={{ color: theme.text2, fontSize: "0.9rem", marginBottom: 22 }}>Enter the dashboard password to continue.</p>
         <form onSubmit={(e) => { e.preventDefault(); onLogin(password); }}>
@@ -481,13 +482,13 @@ function DetailModal({ theme, clay, isMobile, sub, onClose }) {
               <div style={{ fontFamily: TYPOGRAPHY.head, fontWeight: 800, fontSize: "1.8rem", color: scoreColor(sub.health_score), lineHeight: 1 }}>{sub.health_score}<span style={{ fontSize: "0.9rem", color: theme.text3 }}>/100</span></div>
               <div style={{ fontSize: "0.72rem", fontWeight: 700, color: LEVEL_COLOR[sub.result_level] || theme.text }}>{sub.result_level}</div>
             </div>
-            <button onClick={onClose} style={{ background: theme.chipBg, border: "none", borderRadius: 10, width: 34, height: 34, cursor: "pointer", fontSize: "1.1rem", color: theme.text2 }}>✕</button>
+            <button onClick={onClose} style={{ background: theme.chipBg, border: "none", borderRadius: 10, width: 34, height: 34, cursor: "pointer", color: theme.text2, display: "flex", alignItems: "center", justifyContent: "center" }} aria-label="Close"><Icon name="close-x" size={18} /></button>
           </div>
         </div>
 
         <div style={{ padding: isMobile ? "18px" : "24px 26px" }}>
           {(sub.critical_flags?.length || 0) > 0 && (
-            <SectionBlock title="⚠️ Revenue-critical warnings" theme={theme}>
+            <SectionBlock title={<><Icon name="exclamation-mark-triangle" size={18} color="#DC2626" style={{ marginRight: 6 }} />Revenue-critical warnings</>} theme={theme}>
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                 {sub.critical_flags.map((f) => (
                   <div key={f.id} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: "0.86rem", color: theme.text }}>
