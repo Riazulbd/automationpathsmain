@@ -13,10 +13,10 @@ const AUTHOR_FIELDS = [
 // Sensible defaults so a new post starts with a strong E-E-A-T baseline.
 const DEFAULT_AUTHOR = {
   author_name: "Riazul Islam",
-  author_title: "Revenue Systems Architect & Fractional CTO",
+  author_title: "Marketing Operations & CRM Automation Specialist",
   author_bio:
-    "Riazul Islam is a Revenue Systems Architect and Fractional CTO who designs CRM architecture, Voice AI, and automation systems that compound revenue for agencies, coaches, and consultants.",
-  author_credentials: "Top Rated on Upwork · 5,000+ hours · $59.76M attributed client revenue · 7+ years",
+    "Riazul Islam is a Marketing Operations and CRM Automation Specialist who designs CRM architecture, lifecycle automation, integrations, and reporting systems for consultancy clients.",
+  author_credentials: "Marketing Operations & CRM Automation Specialist · Revenue Systems Architect",
   author_avatar: "",
   author_url: "https://automationpaths.com",
   author_linkedin: "",
@@ -548,7 +548,7 @@ export default function PostEditor({ token, theme, isMobile, postId, categories,
                   <label style={label}>Bio</label>
                   <textarea value={form.author_bio || ""} onChange={(e) => set({ author_bio: e.target.value })} rows={3} placeholder="Who wrote this and why they're qualified" style={{ ...inp, resize: "vertical", fontSize: "0.85rem" }} />
                 </div>
-                <Field label="Credentials / expertise" theme={theme} inp={inp} labelStyle={label} value={form.author_credentials} onChange={(v) => set({ author_credentials: v })} placeholder="e.g. Top Rated · 5,000+ hrs · $59M revenue" />
+                <Field label="Credentials / expertise" theme={theme} inp={inp} labelStyle={label} value={form.author_credentials} onChange={(v) => set({ author_credentials: v })} placeholder="e.g. CRM architecture · lifecycle automation" />
                 <Field label="Website URL" theme={theme} inp={inp} labelStyle={label} value={form.author_url} onChange={(v) => set({ author_url: v })} placeholder="https://…" />
                 <Field label="LinkedIn URL" theme={theme} inp={inp} labelStyle={label} value={form.author_linkedin} onChange={(v) => set({ author_linkedin: v })} placeholder="https://linkedin.com/in/…" />
                 <Field label="X / Twitter URL" theme={theme} inp={inp} labelStyle={label} value={form.author_twitter} onChange={(v) => set({ author_twitter: v })} placeholder="https://x.com/…" />

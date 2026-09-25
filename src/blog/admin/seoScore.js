@@ -118,7 +118,7 @@ export function analyzeContent(form) {
   eAdd("author", form.author_name ? "good" : "bad", "Named author (not anonymous)", "Attribute the post to a real, named person.");
   eAdd("title", (form.author_title || "").trim() ? "good" : "bad", "Author job title / role", "State the author's role to signal expertise.");
   eAdd("bio", (form.author_bio || "").trim().length >= 40 ? "good" : (form.author_bio || "").trim() ? "ok" : "bad", "Author bio present", "Add a bio (40+ chars) describing who wrote this and why they're qualified.");
-  eAdd("credentials", (form.author_credentials || "").trim() ? "good" : "bad", "Expertise / credentials stated", "List credentials, results, or experience (e.g. '7+ years, $59M revenue').");
+  eAdd("credentials", (form.author_credentials || "").trim() ? "good" : "bad", "Expertise / credentials stated", "List specific, supportable credentials or areas of experience.");
   eAdd("linkedin", (form.author_linkedin || "").trim() ? "good" : "ok", "LinkedIn profile linked", "Link the author's LinkedIn — a strong authority signal.");
   eAdd("social", profileLinks.length >= 2 ? "good" : profileLinks.length === 1 ? "ok" : "bad", `Author profile links (${profileLinks.length})`, "Link 2+ author profiles (LinkedIn, X, personal site) as sameAs signals.");
   eAdd("sources", c.external >= 2 ? "good" : c.external === 1 ? "ok" : "bad", `Cites external sources (${c.external})`, "Cite authoritative external sources to build trust.");
