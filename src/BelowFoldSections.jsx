@@ -22,10 +22,10 @@ const services = [
 ];
 
 const processSteps = [
-  { number: "01", title: "Diagnose", description: "Deep audit of your revenue pipeline. I find where leads die, where response time breaks, and where revenue leaks." },
-  { number: "02", title: "Architect", description: "System blueprint covering CRM logic, automation flows, and AI strategy. Every decision is justified before a single thing gets built." },
-  { number: "03", title: "Ship", description: "Full deployment. Voice agents, pipelines, dashboards, and integrations - wired, tested, documented, and handed over clean." },
-  { number: "04", title: "Compound", description: "I monitor KPIs, refine prompts, and tune conversion paths. Your system gets smarter every week - not more fragile." },
+  { number: "01", icon: "magnifying-glass", title: "Diagnose", description: "Deep audit of your revenue pipeline. I find where leads die, where response time breaks, and where revenue leaks." },
+  { number: "02", icon: "chart-decision-tree-1", title: "Architect", description: "System blueprint covering CRM logic, automation flows, and AI strategy. Every decision is justified before a single thing gets built." },
+  { number: "03", icon: "rocket", title: "Ship", description: "Full deployment. Voice agents, pipelines, dashboards, and integrations - wired, tested, documented, and handed over clean." },
+  { number: "04", icon: "arrow-repeat-clockwise-1", ongoing: true, title: "Compound", description: "I monitor KPIs, refine prompts, and tune conversion paths. Your system gets smarter every week - not more fragile." },
 ];
 
 const stats = [
@@ -495,6 +495,122 @@ const ServiceDetail = ({ service, index, theme, typography, compact, upworkUrl }
 const prefersReducedMotion = () =>
   typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
+// "How I work": a connected timeline. The line draws in and the steps light up
+// one after another when the section scrolls into view.
+const ProcessTimeline = ({ theme, typography, isMobile, isTablet }) => {
+  const ref = useRef(null);
+  const [lit, setLit] = useState(false);
+  const vertical = isMobile || isTablet;
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element || typeof IntersectionObserver === "undefined" || prefersReducedMotion()) {
+      setLit(true);
+      return undefined;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setLit(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.35 }
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  const STEP_DELAY = 0.35;
+  const NODE = vertical ? 52 : 64;
+  const GAP = 28;
+
+  return (
+    <ol ref={ref} style={{ listStyle: "none", position: "relative", display: "grid", gridTemplateColumns: vertical ? "1fr" : `repeat(${processSteps.length}, minmax(0, 1fr))`, gap: GAP }}>
+      {/* Horizontal track + animated fill (vertical layout draws per-step segments instead) */}
+      {!vertical && (
+      <li
+        aria-hidden="true"
+        role="presentation"
+        style={{ position: "absolute", top: NODE / 2 - 1, left: NODE / 2, right: `calc((100% - ${GAP * (processSteps.length - 1)}px) / ${processSteps.length} - ${NODE / 2}px)`, height: 2, background: "rgba(255,255,255,0.1)", borderRadius: 2 }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: theme.grad,
+            borderRadius: 2,
+            transformOrigin: "left",
+            transform: lit ? "scaleX(1)" : "scaleX(0)",
+            transition: `transform ${STEP_DELAY * (processSteps.length - 1)}s cubic-bezier(0.65,0,0.35,1) 0.1s`,
+            boxShadow: `0 0 18px ${theme.a1}`,
+          }}
+        />
+      </li>
+      )}
+
+      {processSteps.map((step, index) => {
+        const delay = 0.1 + index * STEP_DELAY;
+        return (
+          <li key={step.number} style={{ position: "relative", display: vertical ? "grid" : "block", gridTemplateColumns: vertical ? `${NODE}px 1fr` : undefined, gap: vertical ? 18 : undefined, alignItems: "start" }}>
+            {vertical && index < processSteps.length - 1 && (
+              <span aria-hidden="true" style={{ position: "absolute", left: NODE / 2 - 1, top: NODE / 2, height: `calc(100% + ${GAP}px)`, width: 2, background: "rgba(255,255,255,0.1)", borderRadius: 2 }}>
+                <span style={{ position: "absolute", inset: 0, background: theme.grad, borderRadius: 2, transformOrigin: "top", transform: lit ? "scaleY(1)" : "scaleY(0)", transition: `transform ${STEP_DELAY}s linear ${delay}s`, boxShadow: `0 0 14px ${theme.a1}` }} />
+              </span>
+            )}
+            <div
+              style={{
+                width: NODE,
+                height: NODE,
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                position: "relative",
+                zIndex: 1,
+                color: "#fff",
+                background: lit ? theme.grad : "#1B2236",
+                border: "1px solid rgba(255,255,255,0.14)",
+                boxShadow: lit ? `${theme.btnGlow}, 0 0 0 6px rgba(255,255,255,0.04)` : "none",
+                transition: `background 0.5s ease ${delay}s, box-shadow 0.5s ease ${delay}s`,
+                marginBottom: vertical ? 0 : 26,
+              }}
+            >
+              <Icon name={step.icon} size={vertical ? 24 : 28} />
+            </div>
+            <div
+              style={{
+                opacity: lit ? 1 : 0.35,
+                transform: lit ? "none" : "translateY(8px)",
+                transition: `opacity 0.6s ease ${delay}s, transform 0.6s ease ${delay}s`,
+                paddingTop: vertical ? 4 : 0,
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8, minHeight: 24 }}>
+                <span style={{ fontFamily: typography.mono, fontSize: "0.72rem", fontWeight: 600, letterSpacing: "0.12em", color: "rgba(255,255,255,0.55)" }}>
+                  STEP {step.number}
+                </span>
+                {step.ongoing && (
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: "0.66rem", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#fff", padding: "3px 9px", borderRadius: 999, background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.16)" }}>
+                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#34D399", boxShadow: "0 0 8px #34D399" }} />
+                    Ongoing
+                  </span>
+                )}
+              </div>
+              <h3 style={{ fontFamily: typography.head, fontSize: vertical ? "1.3rem" : "1.45rem", fontWeight: 800, letterSpacing: "-0.02em", color: "#fff", marginBottom: 10 }}>
+                {step.title}
+              </h3>
+              <p style={{ fontSize: "0.93rem", lineHeight: 1.7, color: "rgba(255,255,255,0.68)", maxWidth: 300 }}>
+                {step.description}
+              </p>
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+  );
+};
+
 const ServicesExplorer = ({ theme, clay, typography, isMobile, isTablet, upworkUrl }) => {
   const [active, setActive] = useState(0);
   const [openSet, setOpenSet] = useState(() => new Set([0]));
@@ -959,39 +1075,36 @@ export default function BelowFoldSections({ theme, isMobile, isTablet, clay, typ
       <section
         id="process"
         style={{
-          background: `linear-gradient(135deg,${theme.bgDark},${theme.card} 72%)`,
-          border: `1px solid ${theme.cardBorder}`,
+          background: "linear-gradient(160deg, #0B1020 0%, #121A33 55%, #1A1233 100%)",
           borderRadius: isMobile ? 28 : 36,
           margin: isMobile ? "0 12px" : "0 16px",
-          padding: isMobile ? "52px 18px" : "64px 32px",
+          padding: isMobile ? "56px 20px 60px" : "84px 40px 92px",
           position: "relative",
           overflow: "hidden",
           zIndex: 1,
-          boxShadow: clay(theme.cardGlow),
+          boxShadow: "0 30px 80px rgba(11,16,32,0.28)",
         }}
       >
-        <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse 40% 40% at 20% 80%,${theme.glow1},transparent), radial-gradient(ellipse 35% 35% at 80% 20%,${theme.glow2},transparent)`, pointerEvents: "none", opacity: 0.9 }} />
-        <div style={{ maxWidth: 1140, margin: "0 auto", position: "relative", zIndex: 1, textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "5px 14px 5px 6px", background: "rgba(255,255,255,0.72)", border: `1px solid ${theme.cardBorder}`, borderRadius: 999, fontFamily: typography.mono, fontSize: "0.7rem", fontWeight: 500, color: theme.a1, letterSpacing: "0.04em", textTransform: "uppercase", marginBottom: 16, boxShadow: clay() }}>
-            <span style={{ width: 18, height: 18, borderRadius: "50%", background: theme.grad }} />
-            How I Work
-          </div>
-          <h2 style={{ fontFamily: typography.head, fontSize: "clamp(2.1rem,4vw,3.2rem)", fontWeight: 900, lineHeight: 1.08, letterSpacing: "-0.03em", color: theme.text, marginBottom: 12 }}>
-            Architecture through handoff. <GradText>Not just configuration.</GradText>
-          </h2>
-          <p style={{ fontSize: "1rem", color: theme.text2, maxWidth: 500, lineHeight: 1.7, marginBottom: 40 }}>
-            I map requirements, design workflows, implement integrations, test edge cases, document the system, and support a clean handoff.
-          </p>
-          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fit, minmax(220px, 1fr))", gap: 14, width: "100%" }}>
-            {processSteps.map((step) => (
-              <div key={step.number} style={{ background: "rgba(255,255,255,0.78)", backdropFilter: "blur(14px)", border: `1px solid ${theme.cardBorder}`, borderRadius: 24, padding: "28px 20px", textAlign: "center", position: "relative", overflow: "hidden", boxShadow: clay(theme.cardGlow) }}>
-                <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "45%", background: `linear-gradient(to bottom,${theme.chipBg},transparent)`, borderRadius: "24px 24px 50% 50%" }} />
-                <div style={{ fontFamily: typography.display, fontSize: "2.5rem", fontWeight: 900, background: theme.grad, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", opacity: 0.58, lineHeight: 1, marginBottom: 12, position: "relative" }}>{step.number}</div>
-                <h3 style={{ fontFamily: typography.head, fontSize: "1.15rem", fontWeight: 700, color: theme.text, marginBottom: 6, position: "relative" }}>{step.title}</h3>
-                <p style={{ fontSize: "0.83rem", color: theme.text2, lineHeight: 1.6, position: "relative" }}>{step.description}</p>
+        <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse 45% 55% at 12% 0%, ${theme.glow1}, transparent 70%), radial-gradient(ellipse 40% 50% at 95% 100%, ${theme.glow2}, transparent 70%)`, opacity: 1.6, pointerEvents: "none" }} />
+        <div aria-hidden="true" style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px)", backgroundSize: "48px 48px", maskImage: "radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 100%)", WebkitMaskImage: "radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 100%)", pointerEvents: "none" }} />
+        <div style={{ maxWidth: 1140, margin: "0 auto", position: "relative", zIndex: 1 }}>
+          <SectionReveal>
+            <div style={{ display: "grid", gridTemplateColumns: isTablet ? "1fr" : "minmax(0, 7fr) minmax(0, 5fr)", gap: isTablet ? 16 : 48, alignItems: "end", marginBottom: isMobile ? 40 : 64 }}>
+              <div>
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "5px 14px 5px 6px", background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.14)", borderRadius: 999, fontFamily: typography.mono, fontSize: "0.7rem", fontWeight: 500, color: "#fff", letterSpacing: "0.04em", textTransform: "uppercase", marginBottom: 18 }}>
+                  <span style={{ width: 18, height: 18, borderRadius: "50%", background: theme.grad }} />
+                  How I Work
+                </div>
+                <h2 style={{ fontFamily: typography.head, fontSize: "clamp(2.1rem,4vw,3.3rem)", fontWeight: 900, lineHeight: 1.06, letterSpacing: "-0.03em", color: "#fff" }}>
+                  Architecture through handoff. <GradText>Not just configuration.</GradText>
+                </h2>
               </div>
-            ))}
-          </div>
+              <p style={{ fontSize: "1.02rem", color: "rgba(255,255,255,0.7)", lineHeight: 1.75, paddingBottom: isTablet ? 0 : 6 }}>
+                I map requirements, design workflows, implement integrations, test edge cases, document the system, and support a clean handoff.
+              </p>
+            </div>
+          </SectionReveal>
+          <ProcessTimeline theme={theme} typography={typography} isMobile={isMobile} isTablet={isTablet} />
         </div>
       </section>
 

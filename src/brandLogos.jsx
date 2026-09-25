@@ -3,9 +3,11 @@
 // to the hand-drawn tiles in LogoSVG.
 import cloudflareMark from "./assets/logos/cloudflare-mark.png";
 import dockerMark from "./assets/logos/docker-mark.svg";
+import highlevelMark from "./assets/logos/highlevel-mark.png";
 import instantlyMark from "./assets/logos/instantly-mark.svg";
 import n8nMark from "./assets/logos/n8n-mark.svg";
 import openaiMark from "./assets/logos/openai-mark.svg";
+import pipedriveMark from "./assets/logos/pipedrive-mark.png";
 import playwrightMark from "./assets/logos/playwright-mark.svg";
 import retellMark from "./assets/logos/retell-mark.svg";
 import smartleadMark from "./assets/logos/smartlead-mark.svg";
@@ -14,9 +16,11 @@ import supabaseMark from "./assets/logos/supabase-mark.svg";
 export const BRAND_MARKS = {
   Cloudflare: cloudflareMark,
   Docker: dockerMark,
+  GoHighLevel: highlevelMark,
   Instantly: instantlyMark,
   n8n: n8nMark,
   OpenAI: openaiMark,
+  Pipedrive: pipedriveMark,
   Playwright: playwrightMark,
   "Retell AI": retellMark,
   Smartlead: smartleadMark,

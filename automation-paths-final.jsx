@@ -8,6 +8,8 @@ import zapierLogo from "./src/assets/logos/zapier-2.svg";
 import cloudflareWordmark from "./src/assets/logos/cloudflare-wordmark.png";
 import dockerWordmark from "./src/assets/logos/docker-wordmark.svg";
 import n8nWordmark from "./src/assets/logos/n8n-wordmark.svg";
+import highlevelWordmark from "./src/assets/logos/highlevel-wordmark.png";
+import pipedriveWordmark from "./src/assets/logos/pipedrive-wordmark.png";
 import { BRAND_MARKS, BrandMark } from "./src/brandLogos.jsx";
 
 const BelowFoldSections = lazy(() => import("./src/BelowFoldSections.jsx"));
@@ -78,8 +80,8 @@ const platformLogos = [
   { name: "Docker", kind: "image", src: dockerWordmark, imageHeight: 22, imageWidth: 1250, imageIntrinsicHeight: 268 },
   { name: "Cloudflare", kind: "image", src: cloudflareWordmark, imageHeight: 28, imageWidth: 512, imageIntrinsicHeight: 173 },
   { name: "Supabase", kind: "fallback", icon: "Supabase", color: "#0F172A" },
-  { name: "GoHighLevel", kind: "fallback", icon: "GoHighLevel", color: "#1F2937" },
-  { name: "Pipedrive", kind: "text", color: "#17313B" },
+  { name: "GoHighLevel", kind: "image", src: highlevelWordmark, imageHeight: 24, imageWidth: 738, imageIntrinsicHeight: 168 },
+  { name: "Pipedrive", kind: "image", src: pipedriveWordmark, imageHeight: 22, imageWidth: 682, imageIntrinsicHeight: 148 },
   { name: "n8n", kind: "image", src: n8nWordmark, imageHeight: 22, imageWidth: 576, imageIntrinsicHeight: 160 },
   { name: "Make", kind: "fallback", icon: "Make", color: "#111827" },
   { name: "VAPI", kind: "image", src: vapiLogo, imageHeight: 22, imageWidth: 1374, imageIntrinsicHeight: 390 },
